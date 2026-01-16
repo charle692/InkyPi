@@ -28,9 +28,7 @@ class AbstractDisplay:
         Raises:
             NotImplementedError: If not implemented in a subclass.
         """
-        raise NotImplementedError(
-            "Method 'initialize_display(...) must be provided in a subclass."
-        )
+        raise NotImplementedError("Method 'initialize_display(...) must be provided in a subclass.")
 
     def clear_display(self):
         """
@@ -42,9 +40,7 @@ class AbstractDisplay:
         Raises:
             NotImplementedError: If not implemented in a subclass.
         """
-        raise NotImplementedError(
-            "Method 'clear_display(...) must be provided in a subclass."
-        )
+        raise NotImplementedError("Method 'clear_display(...) must be provided in a subclass.")
 
     def display_image(self, image, image_settings=[]):
         """
@@ -58,6 +54,4 @@ class AbstractDisplay:
         Raises:
             NotImplementedError: If not implemented in a subclass.
         """
-        raise NotImplementedError(
-            "Method 'display_image(...) must be provided in a subclass."
-        )
+        raise NotImplementedError("Method 'display_image(...) must be provided in a subclass.")

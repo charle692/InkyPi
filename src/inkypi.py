@@ -1,45 +1,47 @@
 #!/usr/bin/env python3
 
 # set up logging
-import os, logging.config
+import logging.config
+import os
 
 from pi_heif import register_heif_opener
 
-logging.config.fileConfig(
-    os.path.join(os.path.dirname(__file__), "config", "logging.conf")
-)
+logging.config.fileConfig(os.path.join(os.path.dirname(__file__), "config", "logging.conf"))
 
 # suppress warning from inky library https://github.com/pimoroni/inky/issues/205
 import warnings
 
 warnings.filterwarnings("ignore", message=".*Busy Wait: Held high.*")
 
+import argparse
+import logging
 import os
 import random
-
 import sys
-import logging
-import argparse
-from utils.app_utils import generate_startup_image
+
 from flask import Flask, request
+from jinja2 import ChoiceLoader, FileSystemLoader
+from waitress import serve
 from werkzeug.serving import is_running_from_reloader
+
+from blueprints.dev_dashboard import dev_dashboard_bp  # Temporarily disabled
+from blueprints.main import main_bp
+from blueprints.playlist import playlist_bp
+from blueprints.plugin import plugin_bp
+from blueprints.settings import settings_bp
 from config import Config
 from display.display_manager import DisplayManager
-from refresh_task import RefreshTask
-from blueprints.main import main_bp
-from blueprints.settings import settings_bp
-from blueprints.plugin import plugin_bp
-from blueprints.playlist import playlist_bp
-from blueprints.dev_dashboard import dev_dashboard_bp  # Temporarily disabled
-from jinja2 import ChoiceLoader, FileSystemLoader
 from plugins.plugin_registry import load_plugins
-from waitress import serve
+from refresh_task import RefreshTask
+from utils.app_utils import generate_startup_image
 
 # Development-only imports (only available when requirements-dev.txt is used)
 try:
     from flask_socketio import SocketIO
-    from utils.file_watcher import LiveReloadManager
+
     from blueprints.dev import register_socketio_events
+    from utils.file_watcher import LiveReloadManager
+
     DEV_DEPS_AVAILABLE = True
 except ImportError:
     DEV_DEPS_AVAILABLE = False
@@ -52,7 +54,9 @@ logger = logging.getLogger(__name__)
 
 # Parse command line arguments
 parser = argparse.ArgumentParser(description="InkyPi Display Server")
-parser.add_argument("--dev", action="store_true", help="Run in development mode with HTML serving enabled")
+parser.add_argument(
+    "--dev", action="store_true", help="Run in development mode with HTML serving enabled"
+)
 args = parser.parse_args()
 
 # Set development mode settings
@@ -69,7 +73,7 @@ logging.getLogger("waitress.queue").setLevel(logging.ERROR)
 app = Flask(__name__)
 
 # Enable Flask DEBUG mode in development
-app.config['DEBUG'] = DEV_MODE
+app.config["DEBUG"] = DEV_MODE
 app.debug = DEV_MODE
 
 # Initialize SocketIO for live reload (development dependencies required)
@@ -80,7 +84,9 @@ if DEV_MODE:
     if DEV_DEPS_AVAILABLE:
         socketio = SocketIO(app, cors_allowed_origins="*")
     else:
-        logger.error("HTML serving mode requires development dependencies. Please install with: pip install -r install/requirements-dev.txt")
+        logger.error(
+            "HTML serving mode requires development dependencies. Please install with: pip install -r install/requirements-dev.txt"
+        )
         sys.exit(1)
 
 template_dirs = [
@@ -88,9 +94,8 @@ template_dirs = [
     os.path.join(os.path.dirname(__file__), "plugins"),  # Plugin templates
 ]
 from jinja2 import ChoiceLoader, FileSystemLoader
-app.jinja_loader = ChoiceLoader(
-    [FileSystemLoader(directory) for directory in template_dirs]
-)
+
+app.jinja_loader = ChoiceLoader([FileSystemLoader(directory) for directory in template_dirs])
 
 device_config = Config()
 display_manager = DisplayManager(device_config)
@@ -119,6 +124,7 @@ app.register_blueprint(dev_dashboard_bp)
 if DEV_DEPS_AVAILABLE and DEV_MODE:
     try:
         from blueprints.dev import dev_bp
+
         app.register_blueprint(dev_bp)
         logger.info("Development blueprint registered")
     except ImportError as e:
@@ -164,10 +170,17 @@ if __name__ == "__main__":
             live_reload_manager = LiveReloadManager(socketio)
             live_reload_manager.start_watching()
             logger.info("Live reload file watching started")
-            
+
             # Run with SocketIO instead of waitress for live reload support
             try:
-                socketio.run(app, host="0.0.0.0", port=PORT, debug=DEV_MODE, use_reloader=False, allow_unsafe_werkzeug=True)
+                socketio.run(
+                    app,
+                    host="0.0.0.0",
+                    port=PORT,
+                    debug=DEV_MODE,
+                    use_reloader=False,
+                    allow_unsafe_werkzeug=True,
+                )
             finally:
                 if live_reload_manager:
                     live_reload_manager.stop_watching()

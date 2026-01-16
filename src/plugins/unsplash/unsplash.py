@@ -1,11 +1,14 @@
-from plugins.base_plugin.base_plugin import BasePlugin
-from PIL import Image
-from io import BytesIO
-import requests
 import logging
 import random
+from io import BytesIO
+
+import requests
+from PIL import Image
+
+from plugins.base_plugin.base_plugin import BasePlugin
 
 logger = logging.getLogger(__name__)
+
 
 def grab_image(image_url, dimensions, timeout_ms=40000):
     """Grab an image from a URL and resize it to the specified dimensions."""
@@ -19,36 +22,37 @@ def grab_image(image_url, dimensions, timeout_ms=40000):
         logger.error(f"Error grabbing image from {image_url}: {e}")
         return None
 
+
 class Unsplash(BasePlugin):
     def generate_image(self, settings, device_config):
         access_key = device_config.load_env_key("UNSPLASH_ACCESS_KEY")
         if not access_key:
             raise RuntimeError("'Unsplash Access Key' not found.")
 
-        search_query = settings.get('search_query')
-        collections = settings.get('collections')
-        content_filter = settings.get('content_filter', 'low')
-        color = settings.get('color')
-        orientation = settings.get('orientation')
-        
+        search_query = settings.get("search_query")
+        collections = settings.get("collections")
+        content_filter = settings.get("content_filter", "low")
+        color = settings.get("color")
+        orientation = settings.get("orientation")
+
         params = {
-            'client_id': access_key,
-            'content_filter': content_filter,
-            'per_page': 100,
+            "client_id": access_key,
+            "content_filter": content_filter,
+            "per_page": 100,
         }
 
         if search_query:
             url = f"https://api.unsplash.com/search/photos"
-            params['query'] = search_query
+            params["query"] = search_query
         else:
             url = f"https://api.unsplash.com/photos/random"
 
         if collections:
-            params['collections'] = collections
+            params["collections"] = collections
         if color:
-            params['color'] = color
+            params["color"] = color
         if orientation:
-            params['orientation'] = orientation
+            params["orientation"] = orientation
 
         try:
             response = requests.get(url, params=params)
@@ -67,7 +71,6 @@ class Unsplash(BasePlugin):
         except (KeyError, IndexError) as e:
             logger.error(f"Error parsing Unsplash API response: {e}")
             raise RuntimeError("Failed to parse Unsplash API response, please check logs.")
-
 
         dimensions = device_config.get_resolution()
         if device_config.get_config("orientation") == "vertical":

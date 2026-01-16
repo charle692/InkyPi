@@ -1,7 +1,8 @@
 import logging
-from inky.auto import auto
-from display.abstract_display import AbstractDisplay
 
+from inky.auto import auto
+
+from display.abstract_display import AbstractDisplay
 
 logger = logging.getLogger(__name__)
 

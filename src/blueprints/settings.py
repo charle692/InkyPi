@@ -1,14 +1,16 @@
-from flask import Blueprint, request, jsonify, current_app, render_template, Response
-from utils.time_utils import calculate_seconds
-from datetime import datetime, timedelta
-import os
-import pytz
-import logging
 import io
+import logging
+import os
+from datetime import datetime, timedelta
+
+import pytz
+from flask import Blueprint, Response, current_app, jsonify, render_template, request
+
+from utils.time_utils import calculate_seconds
 
 # Try to import cysystemd for journal reading (Linux only)
 try:
-    from cysystemd.reader import JournalReader, JournalOpenMode, Rule
+    from cysystemd.reader import JournalOpenMode, JournalReader, Rule
 
     JOURNAL_AVAILABLE = True
 except ImportError:
@@ -59,14 +61,10 @@ def save_settings():
             return jsonify({"error": "Time Zone is required"}), 400
         if not time_format or time_format not in ["12h", "24h"]:
             return jsonify({"error": "Time format is required"}), 400
-        previous_interval_seconds = device_config.get_config(
-            "plugin_cycle_interval_seconds"
-        )
+        previous_interval_seconds = device_config.get_config("plugin_cycle_interval_seconds")
         plugin_cycle_interval_seconds = calculate_seconds(int(interval), unit)
         if plugin_cycle_interval_seconds > 86400 or plugin_cycle_interval_seconds <= 0:
-            return jsonify(
-                {"error": "Plugin cycle interval must be less than 24 hours"}
-            ), 400
+            return jsonify({"error": "Plugin cycle interval must be less than 24 hours"}), 400
 
         settings = {
             "name": form_data.get("deviceName"),
@@ -136,9 +134,7 @@ def download_logs():
             buffer.write(
                 f"Logs would normally show InkyPi service logs from the last {hours} hours.\n"
             )
-            buffer.write(
-                f"\nTo see Flask development logs, check your terminal output.\n"
-            )
+            buffer.write(f"\nTo see Flask development logs, check your terminal output.\n")
         else:
             reader = JournalReader()
             reader.open(JournalOpenMode.SYSTEM)

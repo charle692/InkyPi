@@ -1,6 +1,7 @@
-import requests
 import logging
-from datetime import datetime, date, timedelta
+from datetime import date, datetime, timedelta
+
+import requests
 
 logger = logging.getLogger(__name__)
 
@@ -21,6 +22,7 @@ query($username: String!) {
   }
 }
 """
+
 
 def contributions_generate_image(plugin_instance, settings, device_config):
     dimensions = device_config.get_resolution()
@@ -45,27 +47,29 @@ def contributions_generate_image(plugin_instance, settings, device_config):
         "grid": grid,
         "month_positions": month_positions,
         "metrics": metrics,
-        "plugin_settings": settings
+        "plugin_settings": settings,
     }
 
     return plugin_instance.render_image(
-        dimensions,
-        "github_contributions.html",
-        "github.css",
-        template_params
+        dimensions, "github_contributions.html", "github.css", template_params
     )
+
 
 # -------------------------
 # Helper functions
 # -------------------------
 
+
 def fetch_contributions(username, api_key):
     url = "https://api.github.com/graphql"
     headers = {"Authorization": f"Bearer {api_key}"}
     variables = {"username": username}
-    resp = requests.post(url, json={"query": GRAPHQL_QUERY, "variables": variables}, headers=headers)
+    resp = requests.post(
+        url, json={"query": GRAPHQL_QUERY, "variables": variables}, headers=headers
+    )
     resp.raise_for_status()
     return resp.json()
+
 
 def parse_contributions(data, colors):
     weeks = data["data"]["user"]["contributionsCollection"]["contributionCalendar"]["weeks"]
@@ -97,6 +101,7 @@ def parse_contributions(data, colors):
         month_positions.pop(0)
 
     return grid, month_positions
+
 
 def calculate_metrics(data):
     weeks = data["data"]["user"]["contributionsCollection"]["contributionCalendar"]["weeks"]

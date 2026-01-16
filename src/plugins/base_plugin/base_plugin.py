@@ -1,40 +1,32 @@
-import logging
-import os
-from utils.app_utils import resolve_path, get_fonts
-from utils.image_utils import take_screenshot_html
-from jinja2 import Environment, FileSystemLoader, select_autoescape
-from pathlib import Path
 import asyncio
 import base64
+import logging
+import os
+from pathlib import Path
+
+from jinja2 import Environment, FileSystemLoader, select_autoescape
+
+from utils.app_utils import get_fonts, resolve_path
+from utils.image_utils import take_screenshot_html
 
 logger = logging.getLogger(__name__)
 
 STATIC_DIR = resolve_path("static")
 PLUGINS_DIR = resolve_path("plugins")
-BASE_PLUGIN_DIR =  os.path.join(PLUGINS_DIR, "base_plugin")
+BASE_PLUGIN_DIR = os.path.join(PLUGINS_DIR, "base_plugin")
 BASE_PLUGIN_RENDER_DIR = os.path.join(BASE_PLUGIN_DIR, "render")
 
 FRAME_STYLES = [
-    {
-        "name": "None",
-        "icon": "frames/blank.png"
-    },
-    {
-        "name": "Corner",
-        "icon": "frames/corner.png"
-    },
-    {
-        "name": "Top and Bottom",
-        "icon": "frames/top_and_bottom.png"
-    },
-    {
-        "name": "Rectangle",
-        "icon": "frames/rectangle.png"
-    }
+    {"name": "None", "icon": "frames/blank.png"},
+    {"name": "Corner", "icon": "frames/corner.png"},
+    {"name": "Top and Bottom", "icon": "frames/top_and_bottom.png"},
+    {"name": "Rectangle", "icon": "frames/rectangle.png"},
 ]
+
 
 class BasePlugin:
     """Base class for all plugins."""
+
     def __init__(self, config, **dependencies):
         self.config = config
 
@@ -42,10 +34,7 @@ class BasePlugin:
         if os.path.exists(self.render_dir):
             # instantiate jinja2 env with base plugin and current plugin render directories
             loader = FileSystemLoader([self.render_dir, BASE_PLUGIN_RENDER_DIR])
-            self.env = Environment(
-                loader=loader,
-                autoescape=select_autoescape(['html', 'xml'])
-            )
+            self.env = Environment(loader=loader, autoescape=select_autoescape(["html", "xml"]))
 
     def generate_image(self, settings, device_config):
         raise NotImplementedError("generate_image must be implemented by subclasses")
@@ -77,7 +66,7 @@ class BasePlugin:
         if Path(settings_path).is_file():
             template_params["settings_template"] = f"{self.get_plugin_id()}/settings.html"
 
-        template_params['frame_styles'] = FRAME_STYLES
+        template_params["frame_styles"] = FRAME_STYLES
         return template_params
 
     def render_image(self, dimensions, html_file, css_file=None, template_params={}):
@@ -90,24 +79,25 @@ class BasePlugin:
         # Check if we should serve HTML instead of taking screenshot
         try:
             from flask import current_app
-            if current_app.config.get('SERVE_HTML_MODE', False):
+
+            if current_app.config.get("SERVE_HTML_MODE", False):
                 # Convert CSS file paths to web URLs for browser access
                 css_urls = []
                 for css_file in css_files:
-                    if 'base_plugin' in css_file:
+                    if "base_plugin" in css_file:
                         # Base plugin CSS - use CSS route for base plugin
                         css_urls.append(f"/css/base_plugin/{os.path.basename(css_file)}")
                     else:
                         # Plugin-specific CSS - use plugin CSS route
                         css_urls.append(f"/css/{self.get_plugin_id()}/{os.path.basename(css_file)}")
-                
+
                 template_params["style_sheets"] = css_urls
             else:
                 template_params["style_sheets"] = css_files
         except (RuntimeError, ImportError):
             # Not in Flask context or Flask not available
             template_params["style_sheets"] = css_files
-        
+
         template_params["width"] = dimensions[0]
         template_params["height"] = dimensions[1]
         template_params["font_faces"] = get_fonts()
@@ -120,11 +110,12 @@ class BasePlugin:
         # Check if we should serve HTML instead of taking screenshot
         try:
             from flask import current_app
-            if current_app.config.get('SERVE_HTML_MODE', False):
+
+            if current_app.config.get("SERVE_HTML_MODE", False):
                 return {
-                    'html': rendered_html,
-                    'css_files': template_params["style_sheets"],  # Already converted to URLs
-                    'template_params': template_params
+                    "html": rendered_html,
+                    "css_files": template_params["style_sheets"],  # Already converted to URLs
+                    "template_params": template_params,
                 }
         except (RuntimeError, ImportError):
             # Not in Flask context or Flask not available

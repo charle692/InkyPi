@@ -205,7 +205,8 @@ class Playlist:
         """Add a new plugin instance to the playlist."""
         if self.find_plugin(plugin_data["plugin_id"], plugin_data["name"]):
             logger.warning(
-                f"Plugin '{plugin_data['plugin_id']}' with instance '{plugin_data['name']}' already exists."
+                f"Plugin '{plugin_data['plugin_id']}' with instance "
+                f"'{plugin_data['name']}' already exists."
             )
             return False
         self.plugins.append(PluginInstance.from_dict(plugin_data))
@@ -309,7 +310,7 @@ class PluginInstance:
             setattr(self, key, value)
 
     def should_refresh(self, current_time):
-        """Checks whether the plugin should be refreshed based on its refresh settings and the current time."""
+        """Checks whether plugin should be refreshed based on refresh settings and current time."""
         latest_refresh_dt = self.get_latest_refresh_dt()
         if not latest_refresh_dt:
             return True

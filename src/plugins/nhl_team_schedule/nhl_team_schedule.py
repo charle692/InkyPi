@@ -55,7 +55,10 @@ class NHLTeamSchedule(BasePlugin):
             "away_team": away_team,
             "networks": networks,
             "plugin_settings": settings,
-            "title": f"{home_team.get('commonName', {}).get('default', '')} vs {away_team.get('commonName', {}).get('default', '')}",
+            "title": (
+                f"{home_team.get('commonName', {}).get('default', '')} vs "
+                f"{away_team.get('commonName', {}).get('default', '')}"
+            ),
             "home_team_stats": home_team_stats,
             "away_team_stats": away_team_stats,
         }

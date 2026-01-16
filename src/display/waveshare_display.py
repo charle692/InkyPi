@@ -84,7 +84,6 @@ class WaveshareDisplay(AbstractDisplay):
             self.epd_display_init()
 
             display_args_spec = inspect.getfullargspec(self.epd_display.display)
-            display_args = display_args_spec.args
         except ModuleNotFoundError:
             raise ValueError(f"Unsupported Waveshare display type: {display_type}")
         except AttributeError:
@@ -134,7 +133,7 @@ class WaveshareDisplay(AbstractDisplay):
 
         logger.info("Displaying image to Waveshare display.")
         if not image:
-            raise ValueError(f"No image provided.")
+            raise ValueError("No image provided.")
 
         # Assume device was in sleep mode.
         self.epd_display_init()

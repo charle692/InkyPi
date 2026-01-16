@@ -36,7 +36,10 @@ UNITS = {
     "imperial": {"temperature": "°F", "speed": "mph"},
 }
 
-WEATHER_URL = "https://api.openweathermap.org/data/3.0/onecall?lat={lat}&lon={long}&units={units}&exclude=minutely&appid={api_key}"
+WEATHER_URL = (
+    "https://api.openweathermap.org/data/3.0/onecall?lat={lat}&lon={long}"
+    "&units={units}&exclude=minutely&appid={api_key}"
+)
 AIR_QUALITY_URL = (
     "http://api.openweathermap.org/data/2.5/air_pollution?lat={lat}&lon={long}&appid={api_key}"
 )
@@ -44,8 +47,19 @@ GEOCODING_URL = (
     "http://api.openweathermap.org/geo/1.0/reverse?lat={lat}&lon={long}&limit=1&appid={api_key}"
 )
 
-OPEN_METEO_FORECAST_URL = "https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={long}&hourly=temperature_2m,precipitation,precipitation_probability,relative_humidity_2m,surface_pressure,visibility&daily=weathercode,temperature_2m_max,temperature_2m_min,sunrise,sunset&current_weather=true&timezone=auto&models=best_match&forecast_days={forecast_days}"
-OPEN_METEO_AIR_QUALITY_URL = "https://air-quality-api.open-meteo.com/v1/air-quality?latitude={lat}&longitude={long}&hourly=european_aqi,uv_index,uv_index_clear_sky&timezone=auto"
+OPEN_METEO_FORECAST_URL = (
+    "https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={long}"
+    "&hourly=temperature_2m,precipitation,precipitation_probability,"
+    "relative_humidity_2m,surface_pressure,visibility&daily=weathercode,"
+    "temperature_2m_max,temperature_2m_min,sunrise,sunset&"
+    "current_weather=true"
+    "&timezone=auto&models=best_match&forecast_days={forecast_days}"
+)
+OPEN_METEO_AIR_QUALITY_URL = (
+    "https://air-quality-api.open-meteo.com/v1/air-quality?"
+    "latitude={lat}&longitude={long}&hourly=european_aqi,uv_index,"
+    "uv_index_clear_sky&timezone=auto"
+)
 OPEN_METEO_UNIT_PARAMS = {
     "standard": "temperature_unit=kelvin&wind_speed_unit=ms&precipitation_unit=mm",
     "metric": "temperature_unit=celsius&wind_speed_unit=ms&precipitation_unit=mm",
@@ -251,7 +265,7 @@ class Weather(BasePlugin):
         return icon
 
     def get_moon_phase_icon_path(self, phase_name: str, lat: float) -> str:
-        """Determines the path to the moon icon, inverting it if the location is in the Southern Hemisphere."""
+        """Determines path to moon icon, inverting it if location is in Southern Hemisphere."""
         # Waxing, Waning, First and Last quarter phases are inverted between hemispheres.
         if lat < 0:  # Southern Hemisphere
             if phase_name == "waxingcrescent":
@@ -271,7 +285,8 @@ class Weather(BasePlugin):
 
     def parse_forecast(self, daily_forecast, tz, current_suffix, lat):
         """
-        - daily_forecast: list of daily entries from One‑Call v3 (each has 'dt', 'weather', 'temp', 'moon_phase')
+        - daily_forecast: list of daily entries from One‑Call v3 (each has 'dt', 'weather',
+                          'temp', 'moon_phase')
         - tz: your target tzinfo (e.g. from zoneinfo or pytz)
         """
         PHASES = [
@@ -336,7 +351,8 @@ class Weather(BasePlugin):
 
     def parse_open_meteo_forecast(self, daily_data, tz, is_day, lat):
         """
-        Parse the daily forecast from Open-Meteo API and calculate moon phase and illumination using the local 'astral' library.
+        Parse daily forecast from Open-Meteo API and calculate moon phase and illumination
+        using local 'astral' library.
         """
         times = daily_data.get("time", [])
         weather_codes = daily_data.get("weathercode", [])
@@ -353,7 +369,6 @@ class Weather(BasePlugin):
             weather_icon = self.map_weather_code_to_icon(code, is_day)
             weather_icon_path = self.get_plugin_dir(f"icons/{weather_icon}.png")
 
-            timestamp = int(dt.replace(hour=12, minute=0, second=0).timestamp())
             target_date: date = dt.date() + timedelta(days=1)
 
             try:
@@ -365,7 +380,6 @@ class Weather(BasePlugin):
             except Exception as e:
                 logger.error(f"Error calculating moon phase for {target_date}: {e}")
                 illum_pct = 0
-                phase_name = "newmoon"
             moon_icon_path = self.get_moon_phase_icon_path(phase_name_north_hemi, lat)
 
             forecast.append(
@@ -458,7 +472,8 @@ class Weather(BasePlugin):
             )
         else:
             logging.error(
-                f"Sunrise not found in OpenWeatherMap response, this is expected for polar areas in midnight sun and polar night periods."
+                "Sunrise not found in OpenWeatherMap response, this is expected for "
+                "polar areas in midnight sun and polar night periods."
             )
 
         sunset_epoch = weather.get("current", {}).get("sunset")
@@ -474,7 +489,8 @@ class Weather(BasePlugin):
             )
         else:
             logging.error(
-                f"Sunset not found in OpenWeatherMap response, this is expected for polar areas in midnight sun and polar night periods."
+                "Sunset not found in OpenWeatherMap response, this is expected for "
+                "polar areas in midnight sun and polar night periods."
             )
 
         wind_deg = weather.get("current", {}).get("wind_deg", 0)
@@ -562,7 +578,8 @@ class Weather(BasePlugin):
             )
         else:
             logging.error(
-                f"Sunrise not found in Open-Meteo response, this is expected for polar areas in midnight sun and polar night periods."
+                "Sunrise not found in Open-Meteo response, this is expected for "
+                "polar areas in midnight sun and polar night periods."
             )
 
         # Sunset
@@ -579,7 +596,8 @@ class Weather(BasePlugin):
             )
         else:
             logging.error(
-                f"Sunset not found in Open-Meteo response, this is expected for polar areas in midnight sun and polar night periods."
+                "Sunset not found in Open-Meteo response, this is expected for "
+                "polar areas in midnight sun and polar night periods."
             )
 
         # Wind
@@ -773,7 +791,8 @@ class Weather(BasePlugin):
             raise RuntimeError("Failed to retrieve location.")
 
         location_data = response.json()[0]
-        location_str = f"{location_data.get('name')}, {location_data.get('state', location_data.get('country'))}"
+        state = location_data.get("state", location_data.get("country"))
+        location_str = f"{location_data.get('name')}, {state}"
 
         return location_str
 

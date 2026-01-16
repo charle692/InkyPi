@@ -49,7 +49,7 @@ def plugin_page(plugin_id):
             plugin = get_plugin_instance(plugin_config)
             template_params = plugin.generate_settings_template()
 
-            # retrieve plugin instance from the query parameters if updating existing plugin instance
+            # retrieve plugin instance from query params if updating existing plugin instance
             plugin_instance_name = request.args.get("instance")
             if plugin_instance_name:
                 plugin_instance = playlist_manager.find_plugin(plugin_id, plugin_instance_name)

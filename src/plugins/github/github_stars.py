@@ -21,7 +21,7 @@ def stars_generate_image(plugin_instance, settings, device_config):
         stars = fetch_stars(github_repository)
     except Exception as e:
         logger.error(f"GitHub graphql request failed: {str(e)}")
-        raise RuntimeError(f"GitHub request failure, please check logs")
+        raise RuntimeError("GitHub request failure, please check logs")
 
     template_params = {"repository": github_repository, "stars": stars, "plugin_settings": settings}
 

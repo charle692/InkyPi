@@ -51,26 +51,25 @@ class RefreshTask:
     def _run(self):
         """Background task that manages the periodic refresh of the display.
 
-        This function runs in a loop, sleeping for a configured duration (`plugin_cycle_interval_seconds`) or until
-        manually triggered via `manual_update()`. Detrmines the next plugin to refresh based on active playlists and
-        updates the display accordingly.
+        Runs in loop, sleeping for configured duration or until manually triggered.
+        Determines next plugin to refresh based on active playlists and updates display.
 
         Workflow:
         1. Waits for the configured sleep duration or until notified of a manual update.
         2. Checks if a manual update has been requested:
         - If so, refreshes the specified plugin immediately.
-        3. Otherwise, determines the next plugin to refresh based on the active playlist and generates an image.
+        3. Otherwise, determines next plugin based on active playlist and generates image.
         4. Compares the image hash with the last displayed image hash.
         - If the image has changed, updates the display.
         - If the image is the same, skips the refresh.
         5. Updates the refresh metadata in the device configuration.
         6. Repeats the process until `stop()` is called.
 
-        Handles any exceptions that occur during the refresh process and ensures the refresh event is set
+        Handles exceptions during refresh process and ensures refresh event is set
         to indicate completion.
 
         Exceptions:
-        - Captures and logs any unexpected errors during execution to prevent the thread from exiting.
+        - Captures and logs unexpected errors during execution to prevent thread from exiting.
         """
         while True:
             try:
@@ -105,7 +104,8 @@ class RefreshTask:
 
                         # handle refresh based on playlists
                         logger.info(
-                            f"Running interval refresh check. | current_time: {current_dt.strftime('%Y-%m-%d %H:%M:%S')}"
+                            f"Running interval refresh check. | current_time: "
+                            f"{current_dt.strftime('%Y-%m-%d %H:%M:%S')}"
                         )
                         playlist, plugin_instance = self._determine_next_plugin(
                             playlist_manager, latest_refresh, current_dt
@@ -138,7 +138,8 @@ class RefreshTask:
                             )
                         else:
                             logger.info(
-                                f"Image already displayed, skipping refresh. | refresh_info: {refresh_info}"
+                                f"Image already displayed, skipping refresh. | "
+                                f"refresh_info: {refresh_info}"
                             )
 
                         # update latest refresh data in the device config
@@ -152,7 +153,7 @@ class RefreshTask:
                 self.refresh_event.set()
 
     def manual_update(self, refresh_action):
-        """Manually triggers an update for the specified plugin id and plugin settings by notifying the background process."""
+        """Manually triggers update for specified plugin by notifying background process."""
         if self.running:
             with self.condition:
                 self.manual_update_request = refresh_action
@@ -179,11 +180,11 @@ class RefreshTask:
         return datetime.now(pytz.timezone(tz_str))
 
     def _determine_next_plugin(self, playlist_manager, latest_refresh_info, current_dt):
-        """Determines the next plugin to refresh based on the active playlist, plugin cycle interval, and current time."""
+        """Determines next plugin based on active playlist, cycle interval, and current time."""
         playlist = playlist_manager.determine_active_playlist(current_dt)
         if not playlist:
             playlist_manager.active_playlist = None
-            logger.info(f"No active playlist determined.")
+            logger.info("No active playlist determined.")
             return None, None
 
         playlist_manager.active_playlist = playlist.name
@@ -204,13 +205,15 @@ class RefreshTask:
                 latest_refresh_dt.strftime("%Y-%m-%d %H:%M:%S") if latest_refresh_dt else "None"
             )
             logger.info(
-                f"Not time to update display. | latest_update: {latest_refresh_str} | plugin_cycle_interval: {plugin_cycle_interval}"
+                f"Not time to update display. | latest_update: {latest_refresh_str} | "
+                f"plugin_cycle_interval: {plugin_cycle_interval}"
             )
             return None, None
 
         plugin = playlist.get_next_plugin()
         logger.info(
-            f"Determined next plugin. | active_playlist: {playlist.name} | plugin_instance: {plugin.name}"
+            f"Determined next plugin. | active_playlist: {playlist.name} | "
+            f"plugin_instance: {plugin.name}"
         )
 
         return playlist, plugin
@@ -316,7 +319,8 @@ class PlaylistRefresh(RefreshAction):
             self.plugin_instance.latest_refresh_time = current_dt.isoformat()
         else:
             logger.info(
-                f"Not time to refresh plugin instance, using latest image. | plugin_instance: {self.plugin_instance.name}."
+                f"Not time to refresh plugin instance, using latest image. | "
+                f"plugin_instance: {self.plugin_instance.name}."
             )
             # Load the existing image from disk
             with Image.open(plugin_image_path) as img:

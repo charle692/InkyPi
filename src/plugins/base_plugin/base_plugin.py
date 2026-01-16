@@ -44,7 +44,7 @@ class BasePlugin:
         any files, external resources, or other data associated with the plugin instance.
 
         Args:
-            settings: The plugin instance's settings dict, which may contain file paths or other resources
+            settings: Plugin instance's settings dict, may contain file paths or other resources
         """
         pass  # Default implementation does nothing
 

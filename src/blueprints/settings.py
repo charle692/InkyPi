@@ -129,12 +129,12 @@ def download_logs():
         if not JOURNAL_AVAILABLE:
             # Return a message when running in development mode without systemd
             buffer.write(
-                f"Log download not available in development mode (cysystemd not installed).\n"
+                "Log download not available in development mode (cysystemd not installed).\n"
             )
             buffer.write(
                 f"Logs would normally show InkyPi service logs from the last {hours} hours.\n"
             )
-            buffer.write(f"\nTo see Flask development logs, check your terminal output.\n")
+            buffer.write("\nTo see Flask development logs, check your terminal output.\n")
         else:
             reader = JournalReader()
             reader.open(JournalOpenMode.SYSTEM)

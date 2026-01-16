@@ -42,10 +42,10 @@ class Unsplash(BasePlugin):
         }
 
         if search_query:
-            url = f"https://api.unsplash.com/search/photos"
+            url = "https://api.unsplash.com/search/photos"
             params["query"] = search_query
         else:
-            url = f"https://api.unsplash.com/photos/random"
+            url = "https://api.unsplash.com/photos/random"
 
         if collections:
             params["collections"] = collections

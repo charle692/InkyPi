@@ -39,7 +39,7 @@ class Config:
         return config
 
     def read_plugins_list(self):
-        """Reads the plugin-info.json config JSON from each plugin folder. Excludes the base plugin."""
+        """Reads plugin-info.json config JSON from each plugin folder. Excludes base plugin."""
         # Iterate over all plugin folders
         plugins_list = []
         for plugin in sorted(os.listdir(os.path.join(self.BASE_DIR, "plugins"))):
@@ -64,7 +64,7 @@ class Config:
             json.dump(self.config, outfile, indent=4)
 
     def get_config(self, key=None, default={}):
-        """Gets the value of a specific configuration key or returns the entire config if none provided."""
+        """Gets value of specific config key or returns entire config if none provided."""
         if key is not None:
             return self.config.get(key, default)
         return self.config
@@ -89,7 +89,7 @@ class Config:
         self.write_config()
 
     def update_value(self, key, value, write=False):
-        """Updates a specific key in the configuration with a new value and optionally writes it to the config file."""
+        """Updates specific key in config with new value and optionally writes to config file."""
         self.config[key] = value
         if write:
             self.write_config()

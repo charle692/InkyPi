@@ -3,12 +3,12 @@ Wpotd Plugin for InkyPi
 This plugin fetches the Wikipedia Picture of the Day (Wpotd) from Wikipedia's API
 and displays it on the InkyPi device.
 
-It supports optional manual date selection or random dates and can resize the image to fit the device's dimensions.
+Supports optional manual date selection or random dates and can resize image to fit device.
 
 Wikipedia API Documentation: https://www.mediawiki.org/wiki/API:Main_page
 Picture of the Day example: https://www.mediawiki.org/wiki/API:Picture_of_the_day_viewer
-Github Repository: https://github.com/wikimedia/mediawiki-api-demos/tree/master/apps/picture-of-the-day-viewer
-Wikimedia requires a User Agent header for API requests, which is set in the SESSION headers:
+Github: https://github.com/wikimedia/mediawiki-api-demos/tree/master/apps/picture-of-the-day-viewer
+Wikimedia requires User Agent header for API requests, set in SESSION headers:
 https://foundation.wikimedia.org/wiki/Policy:Wikimedia_Foundation_User-Agent_Policy
 
 Flow:

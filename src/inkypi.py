@@ -1,26 +1,16 @@
 #!/usr/bin/env python3
 
-# set up logging
-import logging.config
-import os
-
-from pi_heif import register_heif_opener
-
-logging.config.fileConfig(os.path.join(os.path.dirname(__file__), "config", "logging.conf"))
-
-# suppress warning from inky library https://github.com/pimoroni/inky/issues/205
-import warnings
-
-warnings.filterwarnings("ignore", message=".*Busy Wait: Held high.*")
-
 import argparse
 import logging
+import logging.config
 import os
 import random
 import sys
+import warnings
 
 from flask import Flask
 from jinja2 import ChoiceLoader, FileSystemLoader
+from pi_heif import register_heif_opener
 from waitress import serve
 
 from blueprints.dev_dashboard import dev_dashboard_bp  # Temporarily disabled
@@ -33,6 +23,13 @@ from display.display_manager import DisplayManager
 from plugins.plugin_registry import load_plugins
 from refresh_task import RefreshTask
 from utils.app_utils import generate_startup_image
+
+logging.config.fileConfig(os.path.join(os.path.dirname(__file__), "config", "logging.conf"))
+
+# suppress warning from inky library https://github.com/pimoroni/inky/issues/205
+
+warnings.filterwarnings("ignore", message=".*Busy Wait: Held high.*")
+
 
 # Development-only imports (only available when requirements-dev.txt is used)
 try:
@@ -84,7 +81,8 @@ if DEV_MODE:
         socketio = SocketIO(app, cors_allowed_origins="*")
     else:
         logger.error(
-            "HTML serving mode requires development dependencies. Please install with: pip install -r install/requirements-dev.txt"
+            "HTML serving mode requires development dependencies. "
+            "Please install with: pip install -r install/requirements-dev.txt"
         )
         sys.exit(1)
 
@@ -160,7 +158,7 @@ if __name__ == "__main__":
                 local_ip = s.getsockname()[0]
                 s.close()
                 logger.info(f"Serving on http://{local_ip}:{PORT}")
-            except:
+            except Exception:
                 pass  # Ignore if we can't get the IP
 
         # Start live reload manager if in HTML serving mode and dependencies available

@@ -1,11 +1,10 @@
 import json
 import logging
-import os
 from datetime import datetime, timedelta
 
 from flask import Blueprint, current_app, jsonify, render_template, request
 
-from utils.app_utils import handle_request_files, parse_form, resolve_path
+from utils.app_utils import handle_request_files, parse_form
 from utils.time_utils import calculate_seconds
 
 logger = logging.getLogger(__name__)

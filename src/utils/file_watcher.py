@@ -9,7 +9,7 @@ import os
 import time
 from typing import Callable, Optional, Set
 
-from watchdog.events import FileModifiedEvent, FileSystemEventHandler
+from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 
 logger = logging.getLogger(__name__)

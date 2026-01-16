@@ -1,7 +1,5 @@
 import logging
 
-from PIL import Image
-
 from plugins.base_plugin.base_plugin import BasePlugin
 from utils.image_utils import take_screenshot
 

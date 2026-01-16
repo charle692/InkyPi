@@ -1,15 +1,13 @@
 import logging
 import math
-import os
 from datetime import datetime
-from io import BytesIO
 
 import numpy as np
 import pytz
-from PIL import Image, ImageColor, ImageDraw, ImageFont
+from PIL import Image, ImageColor, ImageDraw
 
 from plugins.base_plugin.base_plugin import BasePlugin
-from utils.app_utils import get_font, resolve_path
+from utils.app_utils import get_font
 
 logger = logging.getLogger(__name__)
 

@@ -19,10 +19,9 @@ import os
 import random
 import sys
 
-from flask import Flask, request
+from flask import Flask
 from jinja2 import ChoiceLoader, FileSystemLoader
 from waitress import serve
-from werkzeug.serving import is_running_from_reloader
 
 from blueprints.dev_dashboard import dev_dashboard_bp  # Temporarily disabled
 from blueprints.main import main_bp
@@ -93,7 +92,6 @@ template_dirs = [
     os.path.join(os.path.dirname(__file__), "templates"),  # Default template folder
     os.path.join(os.path.dirname(__file__), "plugins"),  # Plugin templates
 ]
-from jinja2 import ChoiceLoader, FileSystemLoader
 
 app.jinja_loader = ChoiceLoader([FileSystemLoader(directory) for directory in template_dirs])
 

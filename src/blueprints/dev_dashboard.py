@@ -7,7 +7,7 @@ plugin selection, and development tools.
 
 import logging
 
-from flask import Blueprint, current_app, jsonify, render_template, request
+from flask import Blueprint, current_app, jsonify, render_template
 
 from plugins.plugin_registry import get_plugin_instance
 

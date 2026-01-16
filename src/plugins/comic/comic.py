@@ -1,5 +1,5 @@
 import requests
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 
 from plugins.base_plugin.base_plugin import BasePlugin
 from utils.app_utils import get_font

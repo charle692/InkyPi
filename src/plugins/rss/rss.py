@@ -1,10 +1,8 @@
 import html
 import logging
-from io import BytesIO
 
 import feedparser
 import requests
-from PIL import Image
 
 from plugins.base_plugin.base_plugin import BasePlugin
 

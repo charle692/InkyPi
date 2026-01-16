@@ -1,17 +1,14 @@
 import logging
-import os
 from datetime import datetime, timedelta
-from io import BytesIO
 
 import icalendar
 import pytz
 import recurring_ical_events
 import requests
-from PIL import Image, ImageColor, ImageDraw, ImageFont
+from PIL import ImageColor
 
 from plugins.base_plugin.base_plugin import BasePlugin
 from plugins.calendar.constants import FONT_SIZES, LOCALE_MAP
-from utils.app_utils import get_font, resolve_path
 
 logger = logging.getLogger(__name__)
 

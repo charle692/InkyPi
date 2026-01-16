@@ -7,7 +7,6 @@ from pathlib import Path
 from PIL import Image
 
 from display.abstract_display import AbstractDisplay
-from plugins.plugin_registry import get_plugin_instance
 
 logger = logging.getLogger(__name__)
 

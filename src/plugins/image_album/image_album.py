@@ -1,6 +1,6 @@
 import logging
 from io import BytesIO
-from random import choice, random
+from random import choice
 
 import requests
 from PIL import Image, ImageColor, ImageOps

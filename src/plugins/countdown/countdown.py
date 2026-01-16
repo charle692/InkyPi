@@ -1,8 +1,7 @@
 import logging
-from datetime import datetime, timezone
+from datetime import datetime
 
 import pytz
-from PIL import Image
 
 from plugins.base_plugin.base_plugin import BasePlugin
 

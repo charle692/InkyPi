@@ -1,8 +1,4 @@
 import logging
-from io import BytesIO
-
-import requests
-from PIL import Image
 
 from plugins.base_plugin.base_plugin import BasePlugin
 

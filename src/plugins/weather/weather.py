@@ -1,13 +1,10 @@
 import logging
 import math
-import os
 from datetime import date, datetime, timedelta, timezone
-from io import BytesIO
 
 import pytz
 import requests
 from astral import moon
-from PIL import Image
 
 from plugins.base_plugin.base_plugin import BasePlugin
 

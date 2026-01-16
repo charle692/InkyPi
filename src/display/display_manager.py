@@ -1,5 +1,4 @@
 import fnmatch
-import json
 import logging
 
 from display.mock_display import MockDisplay

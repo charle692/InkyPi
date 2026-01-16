@@ -25,10 +25,10 @@ jobs:
         pip install black isort flake8
 
     - name: Check Black formatting
-      run: black --check --line-length 100 .
+      run: black --check .
 
     - name: Check isort formatting
-      run: isort --check-only --profile black --line-length 100 .
+      run: isort --check-only .
 
     - name: Run flake8
       run: flake8 .

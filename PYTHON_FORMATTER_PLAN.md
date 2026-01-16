@@ -100,9 +100,9 @@ extend-ignore = E203,W503
 }
 ```
 
-### Phase 3: GitHub Actions Workflow
+### ✅ Phase 3: GitHub Actions Workflow
 
-#### 3.1 Create `.github/workflows/formatting.yml`
+#### 3.1 Created `.github/workflows/formatting.yml`
 ```yaml
 name: Code Formatting Check
 
@@ -115,27 +115,27 @@ on:
 jobs:
   formatting:
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      
+
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.10'
-        
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install black isort flake8
-        
+
     - name: Check Black formatting
       run: black --check --line-length 100 .
-      
+
     - name: Check isort formatting
       run: isort --check-only --profile black --line-length 100 .
-      
+
     - name: Run flake8
       run: flake8 .
 ```
@@ -160,6 +160,25 @@ flake8 .
 
 # Run all formatting tools
 black --line-length 100 . && isort --profile black --line-length 100 . && flake8 .
+```
+
+#### 4.2 Update `docs/development.md`
+Add brief "Code Quality" section after "Testing Your Changes":
+```markdown
+## Code Quality
+
+This project uses automated formatting tools to maintain consistent code style:
+
+```bash
+# Install formatting tools
+pip install black isort flake8
+
+# Format code (run before committing)
+black . && isort . && flake8 .
+```
+
+**VS Code**: Auto-formatting on save is enabled with recommended extensions.
+**CI**: GitHub Actions automatically checks formatting on all pull requests.
 ```
 
 ### Phase 5: Initial Codebase Formatting
@@ -249,6 +268,8 @@ code --install-extension editorconfig.editorconfig
 | GitHub Actions | 0.5 day | High |
 | Code Formatting | 1 day | Medium |
 | Documentation | 0.5 day | Low |
+| AGENTS.md update | 0.25 day | Low |
+| docs/development.md update | 0.25 day | Low |
 
 ## 💡 Development Tips
 
@@ -276,7 +297,7 @@ code --install-extension editorconfig.editorconfig
 
 **Benefits of this approach:**
 - ✅ Fewer moving parts
-- ✅ No local setup beyond VS Code extensions  
+- ✅ No local setup beyond VS Code extensions
 - ✅ CI enforces standards for all contributors
 - ✅ Simpler onboarding for new developers
 - ✅ Works with any editor (CI is the ultimate authority)

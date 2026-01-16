@@ -97,9 +97,6 @@ http://localhost:8080/dev/enhanced-preview/nhl_team_schedule
 This project uses automated formatting tools to maintain consistent code style:
 
 ```bash
-# Install formatting tools
-pip install black isort flake8
-
 # Format code (run before committing)
 black . && isort . && flake8 .
 ```

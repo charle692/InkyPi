@@ -1,19 +1,22 @@
-from plugins.base_plugin.base_plugin import BasePlugin
-from PIL import Image
-from datetime import datetime, timezone
 import logging
+from datetime import datetime
+
 import pytz
 
+from plugins.base_plugin.base_plugin import BasePlugin
+
 logger = logging.getLogger(__name__)
+
+
 class Countdown(BasePlugin):
     def generate_settings_template(self):
         template_params = super().generate_settings_template()
-        template_params['style_settings'] = True
+        template_params["style_settings"] = True
         return template_params
 
     def generate_image(self, settings, device_config):
-        title = settings.get('title')
-        countdown_date_str = settings.get('date')
+        title = settings.get("title")
+        countdown_date_str = settings.get("date")
 
         if not countdown_date_str:
             raise RuntimeError("Date is required.")
@@ -21,7 +24,7 @@ class Countdown(BasePlugin):
         dimensions = device_config.get_resolution()
         if device_config.get_config("orientation") == "vertical":
             dimensions = dimensions[::-1]
-        
+
         timezone = device_config.get_config("timezone", default="America/New_York")
         tz = pytz.timezone(timezone)
         current_time = datetime.now(tz)
@@ -37,7 +40,7 @@ class Countdown(BasePlugin):
             "date": countdown_date.strftime("%B %d, %Y"),
             "day_count": abs(day_count),
             "label": label,
-            "plugin_settings": settings
+            "plugin_settings": settings,
         }
 
         image = self.render_image(dimensions, "countdown.html", "countdown.css", template_params)

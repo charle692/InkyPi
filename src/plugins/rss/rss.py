@@ -1,25 +1,20 @@
-from plugins.base_plugin.base_plugin import BasePlugin
-from PIL import Image
-from io import BytesIO
+import html
+import logging
+
 import feedparser
 import requests
-import logging
-import html
+
+from plugins.base_plugin.base_plugin import BasePlugin
 
 logger = logging.getLogger(__name__)
 
-FONT_SIZES = {
-    "x-small": 0.7,
-    "small": 0.9,
-    "normal": 1,
-    "large": 1.1,
-    "x-large": 1.3
-}
+FONT_SIZES = {"x-small": 0.7, "small": 0.9, "normal": 1, "large": 1.1, "x-large": 1.3}
+
 
 class Rss(BasePlugin):
     def generate_settings_template(self):
         template_params = super().generate_settings_template()
-        template_params['style_settings'] = True
+        template_params["style_settings"] = True
         return template_params
 
     def generate_image(self, settings, device_config):
@@ -27,7 +22,7 @@ class Rss(BasePlugin):
         feed_url = settings.get("feedUrl")
         if not feed_url:
             raise RuntimeError("RSS Feed Url is required.")
-        
+
         items = self.parse_rss_feed(feed_url)
 
         dimensions = device_config.get_resolution()
@@ -38,17 +33,17 @@ class Rss(BasePlugin):
             "title": title,
             "include_images": settings.get("includeImages") == "true",
             "items": items[:10],
-            "font_scale": FONT_SIZES.get(settings.get('fontSize', 'normal'), 1),
-            "plugin_settings": settings
+            "font_scale": FONT_SIZES.get(settings.get("fontSize", "normal"), 1),
+            "plugin_settings": settings,
         }
 
         image = self.render_image(dimensions, "rss.html", "rss.css", template_params)
         return image
-    
+
     def parse_rss_feed(self, url, timeout=10):
         resp = requests.get(url, timeout=timeout, headers={"User-Agent": "Mozilla/5.0"})
         resp.raise_for_status()
-        
+
         # Parse the feed content
         feed = feedparser.parse(resp.content)
         items = []
@@ -59,7 +54,7 @@ class Rss(BasePlugin):
                 "description": html.unescape(entry.get("description", "")),
                 "published": entry.get("published", ""),
                 "link": entry.get("link", ""),
-                "image": None
+                "image": None,
             }
 
             # Try to extract image from common RSS fields

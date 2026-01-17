@@ -1,7 +1,7 @@
-import feedparser
 import html
 import re
 
+import feedparser
 
 COMICS = {
     "XKCD": {
@@ -23,7 +23,7 @@ COMICS = {
         "element": lambda feed: feed.entries[0].description,
         "url": lambda element: re.search(r'<img[^>]+src=["\"]([^"\"]+)["\"]', element).group(1),
         "title": lambda feed: feed.entries[0].title.split("-")[1].strip(),
-        "caption": lambda element: re.search(r'Hovertext:<br />(.*?)</p>', element).group(1),
+        "caption": lambda element: re.search(r"Hovertext:<br />(.*?)</p>", element).group(1),
     },
     "The Perry Bible Fellowship": {
         "feed": "https://pbfcomics.com/feed/",
@@ -41,7 +41,7 @@ COMICS = {
     },
     "Poorly Drawn Lines": {
         "feed": "https://poorlydrawnlines.com/feed/",
-        "element": lambda feed: feed.entries[0].get('content', [{}])[0].get('value', ''),
+        "element": lambda feed: feed.entries[0].get("content", [{}])[0].get("value", ""),
         "url": lambda element: re.search(r'<img[^>]+src=["\"]([^"\"]+)["\"]', element).group(1),
         "title": lambda feed: feed.entries[0].title,
         "caption": lambda element: "",
@@ -51,7 +51,9 @@ COMICS = {
         "element": lambda feed: feed.entries[0].description,
         "url": lambda element: re.search(r'<img[^>]+src=["\"]([^"\"]+)["\"]', element).group(1),
         "title": lambda feed: feed.entries[0].title,
-        "caption": lambda element: re.search(r'title="(.*?)" />', element.replace('\n', '')).group(1),
+        "caption": lambda element: re.search(r'title="(.*?)" />', element.replace("\n", "")).group(
+            1
+        ),
     },
     "webcomic name": {
         "feed": "https://webcomicname.com/rss",

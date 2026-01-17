@@ -1,21 +1,24 @@
-from plugins.base_plugin.base_plugin import BasePlugin
-from PIL import Image
-from datetime import datetime, timezone
 import logging
+from datetime import datetime
+
 import pytz
 
+from plugins.base_plugin.base_plugin import BasePlugin
+
 logger = logging.getLogger(__name__)
+
+
 class YearProgress(BasePlugin):
     def generate_settings_template(self):
         template_params = super().generate_settings_template()
-        template_params['style_settings'] = True
+        template_params["style_settings"] = True
         return template_params
 
     def generate_image(self, settings, device_config):
         dimensions = device_config.get_resolution()
         if device_config.get_config("orientation") == "vertical":
             dimensions = dimensions[::-1]
-        
+
         timezone = device_config.get_config("timezone", default="America/New_York")
         tz = pytz.timezone(timezone)
         current_time = datetime.now(tz)
@@ -31,8 +34,10 @@ class YearProgress(BasePlugin):
             "year": current_time.year,
             "year_percent": round((elapsed_days / total_days) * 100),
             "days_left": round(days_left),
-            "plugin_settings": settings
+            "plugin_settings": settings,
         }
-        
-        image = self.render_image(dimensions, "year_progress.html", "year_progress.css", template_params)
+
+        image = self.render_image(
+            dimensions, "year_progress.html", "year_progress.css", template_params
+        )
         return image

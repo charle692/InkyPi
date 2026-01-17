@@ -1,33 +1,36 @@
-from plugins.base_plugin.base_plugin import BasePlugin
-from PIL import Image, ImageOps, ImageColor
 import logging
 import os
 import random
 
+from PIL import Image, ImageColor, ImageOps
+
+from plugins.base_plugin.base_plugin import BasePlugin
 from utils.image_utils import pad_image_blur
 
 logger = logging.getLogger(__name__)
 
+
 def list_files_in_folder(folder_path):
     """Return a list of image file paths in the given folder, excluding hidden files."""
-    image_extensions = ('.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.webp', '.heif', '.heic')
+    image_extensions = (".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".webp", ".heif", ".heic")
     image_files = []
     for root, dirs, files in os.walk(folder_path):
         for f in files:
-            if f.lower().endswith(image_extensions) and not f.startswith('.'):
+            if f.lower().endswith(image_extensions) and not f.startswith("."):
                 image_files.append(os.path.join(root, f))
 
     return image_files
 
+
 class ImageFolder(BasePlugin):
     def generate_image(self, settings, device_config):
-        folder_path = settings.get('folder_path')
+        folder_path = settings.get("folder_path")
         if not folder_path:
             raise RuntimeError("Folder path is required.")
-        
+
         if not os.path.exists(folder_path):
             raise RuntimeError(f"Folder does not exist: {folder_path}")
-        
+
         if not os.path.isdir(folder_path):
             raise RuntimeError(f"Path is not a directory: {folder_path}")
 
@@ -49,12 +52,16 @@ class ImageFolder(BasePlugin):
             img = Image.open(image_url)
             img = ImageOps.exif_transpose(img)  # Correct orientation using EXIF
 
-            if settings.get('padImage') == "true":
-                if settings.get('backgroundOption', 'blur') == "blur":
+            if settings.get("padImage") == "true":
+                if settings.get("backgroundOption", "blur") == "blur":
                     img = pad_image_blur(img, dimensions)
                 else:
-                    background_color = ImageColor.getcolor(settings.get('backgroundColor') or (255, 255, 255), "RGB")
-                    img = ImageOps.pad(img, dimensions, color=background_color, method=Image.Resampling.LANCZOS)
+                    background_color = ImageColor.getcolor(
+                        settings.get("backgroundColor") or (255, 255, 255), "RGB"
+                    )
+                    img = ImageOps.pad(
+                        img, dimensions, color=background_color, method=Image.Resampling.LANCZOS
+                    )
 
         except Exception as e:
             logger.error(f"Error loading image from {image_url}: {e}")

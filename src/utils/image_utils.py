@@ -1,13 +1,15 @@
-import requests
-from PIL import Image, ImageEnhance, ImageOps, ImageFilter
-from io import BytesIO
-import os
-import logging
 import hashlib
-import tempfile
+import logging
+import os
 import subprocess
+import tempfile
+from io import BytesIO
+
+import requests
+from PIL import Image, ImageEnhance, ImageFilter, ImageOps
 
 logger = logging.getLogger(__name__)
+
 
 def get_image(image_url):
     response = requests.get(image_url)
@@ -15,19 +17,23 @@ def get_image(image_url):
     if 200 <= response.status_code < 300 or response.status_code == 304:
         img = Image.open(BytesIO(response.content))
     else:
-        logger.error(f"Received non-200 response from {image_url}: status_code: {response.status_code}")
+        logger.error(
+            f"Received non-200 response from {image_url}: status_code: {response.status_code}"
+        )
     return img
 
+
 def change_orientation(image, orientation, inverted=False):
-    if orientation == 'horizontal':
+    if orientation == "horizontal":
         angle = 0
-    elif orientation == 'vertical':
+    elif orientation == "vertical":
         angle = 90
 
     if inverted:
         angle = (angle + 180) % 360
 
     return image.rotate(angle, expand=1)
+
 
 def resize_image(image, desired_size, image_settings=[]):
     img_width, img_height = image.size
@@ -39,8 +45,8 @@ def resize_image(image, desired_size, image_settings=[]):
 
     keep_width = "keep-width" in image_settings
 
-    x_offset, y_offset = 0,0
-    new_width, new_height = img_width,img_height
+    x_offset, y_offset = 0, 0
+    new_width, new_height = img_width, img_height
     # Step 1: Determine crop dimensions
     desired_ratio = desired_width / desired_height
     if img_ratio > desired_ratio:
@@ -60,12 +66,12 @@ def resize_image(image, desired_size, image_settings=[]):
     # Step 3: Resize to the exact desired dimensions (if necessary)
     return image.resize((desired_width, desired_height), Image.LANCZOS)
 
+
 def apply_image_enhancement(img, image_settings={}):
     # Convert image to RGB mode if necessary for enhancement operations
     # ImageEnhance requires RGB mode for operations like blend
-    if img.mode not in ('RGB', 'L'):
-        img = img.convert('RGB')
-        
+    if img.mode not in ("RGB", "L"):
+        img = img.convert("RGB")
 
     # Apply Brightness
     img = ImageEnhance.Brightness(img).enhance(image_settings.get("brightness", 1.0))
@@ -81,11 +87,13 @@ def apply_image_enhancement(img, image_settings={}):
 
     return img
 
+
 def compute_image_hash(image):
     """Compute SHA-256 hash of an image."""
     image = image.convert("RGB")
     img_bytes = image.tobytes()
     return hashlib.sha256(img_bytes).hexdigest()
+
 
 def take_screenshot_html(html_str, dimensions, timeout_ms=None):
     image = None
@@ -104,6 +112,7 @@ def take_screenshot_html(html_str, dimensions, timeout_ms=None):
         logger.error(f"Failed to take screenshot: {str(e)}")
 
     return image
+
 
 def take_screenshot(target, dimensions, timeout_ms=None):
     image = None
@@ -129,7 +138,7 @@ def take_screenshot(target, dimensions, timeout_ms=None):
             "--disable-extensions",
             "--disable-plugins",
             "--mute-audio",
-            "--no-sandbox"
+            "--no-sandbox",
         ]
         if timeout_ms:
             command.append(f"--timeout={timeout_ms}")
@@ -138,7 +147,7 @@ def take_screenshot(target, dimensions, timeout_ms=None):
         # Check if the process failed or the output file is missing
         if result.returncode != 0 or not os.path.exists(img_file_path):
             logger.error("Failed to take screenshot:")
-            logger.error(result.stderr.decode('utf-8'))
+            logger.error(result.stderr.decode("utf-8"))
             return None
 
         # Load the image using PIL
@@ -152,6 +161,7 @@ def take_screenshot(target, dimensions, timeout_ms=None):
         logger.error(f"Failed to take screenshot: {str(e)}")
 
     return image
+
 
 def pad_image_blur(img: Image, dimensions: tuple[int, int]) -> Image:
     bkg = ImageOps.fit(img, dimensions)

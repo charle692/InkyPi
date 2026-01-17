@@ -92,6 +92,18 @@ python src/inkypi.py --dev
 http://localhost:8080/dev/enhanced-preview/nhl_team_schedule
 ```
 
+## Code Quality
+
+This project uses automated formatting tools to maintain consistent code style:
+
+```bash
+# Format code (run before committing)
+black . && isort . && flake8 .
+```
+
+**VS Code**: Auto-formatting on save is enabled with recommended extensions.
+**CI**: GitHub Actions automatically checks formatting on all pull requests.
+
 ## Testing Your Changes
 
 ### Image Rendering (Default)

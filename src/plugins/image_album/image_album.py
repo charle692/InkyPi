@@ -1,13 +1,12 @@
 import logging
-from random import choice, random
+from io import BytesIO
+from random import choice
 
 import requests
 from PIL import Image, ImageColor, ImageOps
-from io import BytesIO
-
 from PIL.ImageFile import ImageFile
-from plugins.base_plugin.base_plugin import BasePlugin
 
+from plugins.base_plugin.base_plugin import BasePlugin
 from utils.image_utils import pad_image_blur
 
 logger = logging.getLogger(__name__)
@@ -37,12 +36,10 @@ class ImmichProvider:
         page = 1
 
         while page_items:
-            body = {
-                "albumIds": [album_id],
-                "size": 1000,
-                "page": page
-            }
-            r2 = requests.post(f"{self.base_url}/api/search/metadata", json=body, headers=self.headers)
+            body = {"albumIds": [album_id], "size": 1000, "page": page}
+            r2 = requests.post(
+                f"{self.base_url}/api/search/metadata", json=body, headers=self.headers
+            )
             r2.raise_for_status()
             assets_data = r2.json()
 
@@ -75,10 +72,10 @@ class ImmichProvider:
 class ImageAlbum(BasePlugin):
     def generate_settings_template(self):
         template_params = super().generate_settings_template()
-        template_params['api_key'] = {
+        template_params["api_key"] = {
             "required": True,
             "service": "Immich",
-            "expected_key": "IMMICH_KEY"
+            "expected_key": "IMMICH_KEY",
         }
         return template_params
 
@@ -92,11 +89,11 @@ class ImageAlbum(BasePlugin):
                 if not key:
                     raise RuntimeError("Immich API Key not configured.")
 
-                url = settings.get('url')
+                url = settings.get("url")
                 if not url:
                     raise RuntimeError("URL is required.")
 
-                album = settings.get('album')
+                album = settings.get("album")
                 if not album:
                     raise RuntimeError("Album is required.")
 
@@ -108,16 +105,20 @@ class ImageAlbum(BasePlugin):
         if img is None:
             raise RuntimeError("Failed to load image, please check logs.")
 
-        if settings.get('padImage') == "true":
+        if settings.get("padImage") == "true":
             dimensions = device_config.get_resolution()
 
             if orientation == "vertical":
                 dimensions = dimensions[::-1]
 
-            if settings.get('backgroundOption') == "blur":
+            if settings.get("backgroundOption") == "blur":
                 return pad_image_blur(img, dimensions)
             else:
-                background_color = ImageColor.getcolor(settings.get('backgroundColor') or (255, 255, 255), "RGB")
-                return ImageOps.pad(img, dimensions, color=background_color, method=Image.Resampling.LANCZOS)
+                background_color = ImageColor.getcolor(
+                    settings.get("backgroundColor") or (255, 255, 255), "RGB"
+                )
+                return ImageOps.pad(
+                    img, dimensions, color=background_color, method=Image.Resampling.LANCZOS
+                )
 
         return img

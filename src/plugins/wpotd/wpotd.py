@@ -1,14 +1,14 @@
 """
 Wpotd Plugin for InkyPi
 This plugin fetches the Wikipedia Picture of the Day (Wpotd) from Wikipedia's API
-and displays it on the InkyPi device. 
+and displays it on the InkyPi device.
 
-It supports optional manual date selection or random dates and can resize the image to fit the device's dimensions.
+Supports optional manual date selection or random dates and can resize image to fit device.
 
 Wikipedia API Documentation: https://www.mediawiki.org/wiki/API:Main_page
 Picture of the Day example: https://www.mediawiki.org/wiki/API:Picture_of_the_day_viewer
-Github Repository: https://github.com/wikimedia/mediawiki-api-demos/tree/master/apps/picture-of-the-day-viewer
-Wikimedia requires a User Agent header for API requests, which is set in the SESSION headers:
+Github: https://github.com/wikimedia/mediawiki-api-demos/tree/master/apps/picture-of-the-day-viewer
+Wikimedia requires User Agent header for API requests, set in SESSION headers:
 https://foundation.wikimedia.org/wiki/Policy:Wikimedia_Foundation_User-Agent_Policy
 
 Flow:
@@ -21,29 +21,33 @@ Flow:
 6. Optionally resize the image to fit the device dimensions. (_shrink_to_fit))
 """
 
-from plugins.base_plugin.base_plugin import BasePlugin
-from PIL import Image, UnidentifiedImageError
-from io import BytesIO
-import requests
 import logging
+from datetime import date, datetime, timedelta
+from io import BytesIO
 from random import randint
-from datetime import datetime, timedelta, date
-from functools import lru_cache
-from typing import Dict, Any
+from typing import Any, Dict
+
+import requests
+from PIL import Image, UnidentifiedImageError
+
+from plugins.base_plugin.base_plugin import BasePlugin
 
 logger = logging.getLogger(__name__)
 
+
 class Wpotd(BasePlugin):
     SESSION = requests.Session()
-    HEADERS = {'User-Agent': 'InkyPi/0.0 (https://github.com/fatihak/InkyPi/)'}
+    HEADERS = {"User-Agent": "InkyPi/0.0 (https://github.com/fatihak/InkyPi/)"}
     API_URL = "https://en.wikipedia.org/w/api.php"
 
     def generate_settings_template(self) -> Dict[str, Any]:
         template_params = super().generate_settings_template()
-        template_params['style_settings'] = False
+        template_params["style_settings"] = False
         return template_params
 
-    def generate_image(self, settings: Dict[str, Any], device_config: Dict[str, Any]) -> Image.Image:
+    def generate_image(
+        self, settings: Dict[str, Any], device_config: Dict[str, Any]
+    ) -> Image.Image:
         logger.info(f"WPOTD plugin settings: {settings}")
         datetofetch = self._determine_date(settings)
         logger.info(f"WPOTD plugin datetofetch: {datetofetch}")
@@ -99,7 +103,7 @@ class Wpotd(BasePlugin):
             "format": "json",
             "formatversion": "2",
             "prop": "images",
-            "titles": title
+            "titles": title,
         }
 
         data = self._make_request(params)
@@ -115,7 +119,7 @@ class Wpotd(BasePlugin):
             "filename": filename,
             "image_src": image_src,
             "image_page_url": f"https://en.wikipedia.org/wiki/{title}",
-            "date": cur_date
+            "date": cur_date,
         }
 
     def _fetch_image_src(self, filename: str) -> str:
@@ -124,7 +128,7 @@ class Wpotd(BasePlugin):
             "format": "json",
             "prop": "imageinfo",
             "iiprop": "url",
-            "titles": filename
+            "titles": filename,
         }
         data = self._make_request(params)
         try:
@@ -136,13 +140,15 @@ class Wpotd(BasePlugin):
 
     def _make_request(self, params: Dict[str, Any]) -> Dict[str, Any]:
         try:
-            response = self.SESSION.get(self.API_URL, params=params, headers=self.HEADERS, timeout=10)
+            response = self.SESSION.get(
+                self.API_URL, params=params, headers=self.HEADERS, timeout=10
+            )
             response.raise_for_status()
             return response.json()
         except Exception as e:
             logger.error(f"Wikipedia API request failed with params {params}: {str(e)}")
             raise RuntimeError("Wikipedia API request failed.")
-        
+
     def _shrink_to_fit(self, image: Image.Image, max_width: int, max_height: int) -> Image.Image:
         """
         Resize the image to fit within max_width and max_height while maintaining aspect ratio.

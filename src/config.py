@@ -1,10 +1,13 @@
-import os
 import json
 import logging
+import os
+
 from dotenv import load_dotenv
+
 from model import PlaylistManager, RefreshInfo
 
 logger = logging.getLogger(__name__)
+
 
 class Config:
     # Base path for the project directory
@@ -36,7 +39,7 @@ class Config:
         return config
 
     def read_plugins_list(self):
-        """Reads the plugin-info.json config JSON from each plugin folder. Excludes the base plugin."""
+        """Reads plugin-info.json config JSON from each plugin folder. Excludes base plugin."""
         # Iterate over all plugin folders
         plugins_list = []
         for plugin in sorted(os.listdir(os.path.join(self.BASE_DIR, "plugins"))):
@@ -57,11 +60,11 @@ class Config:
         logger.debug(f"Writing device config to {self.config_file}")
         self.update_value("playlist_config", self.playlist_manager.to_dict())
         self.update_value("refresh_info", self.refresh_info.to_dict())
-        with open(self.config_file, 'w') as outfile:
+        with open(self.config_file, "w") as outfile:
             json.dump(self.config, outfile, indent=4)
 
     def get_config(self, key=None, default={}):
-        """Gets the value of a specific configuration key or returns the entire config if none provided."""
+        """Gets value of specific config key or returns entire config if none provided."""
         if key is not None:
             return self.config.get(key, default)
         return self.config
@@ -72,7 +75,7 @@ class Config:
 
     def get_plugin(self, plugin_id):
         """Finds and returns a plugin config by its ID."""
-        return next((plugin for plugin in self.plugins_list if plugin['id'] == plugin_id), None)
+        return next((plugin for plugin in self.plugins_list if plugin["id"] == plugin_id), None)
 
     def get_resolution(self):
         """Returns the display resolution as a tuple (width, height) from the configuration."""
@@ -86,7 +89,7 @@ class Config:
         self.write_config()
 
     def update_value(self, key, value, write=False):
-        """Updates a specific key in the configuration with a new value and optionally writes it to the config file."""
+        """Updates specific key in config with new value and optionally writes to config file."""
         self.config[key] = value
         if write:
             self.write_config()

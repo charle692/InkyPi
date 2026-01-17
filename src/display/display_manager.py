@@ -1,9 +1,8 @@
 import fnmatch
-import json
 import logging
 
-from utils.image_utils import resize_image, change_orientation, apply_image_enhancement
 from display.mock_display import MockDisplay
+from utils.image_utils import apply_image_enhancement, change_orientation, resize_image
 
 logger = logging.getLogger(__name__)
 
@@ -86,9 +85,7 @@ class DisplayManager:
         image = resize_image(image, self.device_config.get_resolution(), image_settings)
         if self.device_config.get_config("inverted_image"):
             image = image.rotate(180)
-        image = apply_image_enhancement(
-            image, self.device_config.get_config("image_settings")
-        )
+        image = apply_image_enhancement(image, self.device_config.get_config("image_settings"))
 
         # Pass to the concrete instance to render to the device.
         self.display.display_image(image, image_settings)

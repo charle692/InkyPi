@@ -1,12 +1,12 @@
-import inspect
 import importlib
+import inspect
 import logging
 import sys
+from pathlib import Path
+
+from PIL import Image
 
 from display.abstract_display import AbstractDisplay
-from PIL import Image
-from pathlib import Path
-from plugins.plugin_registry import get_plugin_instance
 
 logger = logging.getLogger(__name__)
 
@@ -20,12 +20,12 @@ def split_image_for_bi_color_epd(image):
     red = (255, 0, 0)
 
     palette_data = [*black, *white, *red]
-    palette_img = Image.new('P', (1, 1))
+    palette_img = Image.new("P", (1, 1))
     palette_img.putpalette(palette_data)
 
     indexed_img = image.quantize(palette=palette_img, dither=Image.Dither.FLOYDSTEINBERG)
-    black_layer = indexed_img.point(lambda p: 0 if p == 0 else 1, mode='1')
-    red_layer = indexed_img.point(lambda p: 0 if p == 2 else 1, mode='1')
+    black_layer = indexed_img.point(lambda p: 0 if p == 0 else 1, mode="1")
+    red_layer = indexed_img.point(lambda p: 0 if p == 2 else 1, mode="1")
     return black_layer, red_layer
 
 
@@ -59,9 +59,7 @@ class WaveshareDisplay(AbstractDisplay):
         logger.info(f"Loading EPD display for {display_type} display")
 
         if not display_type:
-            raise ValueError(
-                "Waveshare driver but 'display_type' not specified in configuration."
-            )
+            raise ValueError("Waveshare driver but 'display_type' not specified in configuration.")
 
         # Construct module path dynamically - e.g. "display.waveshare_epd.epd7in3e"
         module_name = f"display.waveshare_epd.{display_type}"
@@ -86,13 +84,10 @@ class WaveshareDisplay(AbstractDisplay):
             self.epd_display_init()
 
             display_args_spec = inspect.getfullargspec(self.epd_display.display)
-            display_args = display_args_spec.args
         except ModuleNotFoundError:
             raise ValueError(f"Unsupported Waveshare display type: {display_type}")
         except AttributeError:
-            raise ValueError(
-                f"Display does not support required methods: {display_type}"
-            )
+            raise ValueError(f"Display does not support required methods: {display_type}")
 
         self.bi_color_display = len(display_args_spec.args) > 2
 
@@ -138,7 +133,7 @@ class WaveshareDisplay(AbstractDisplay):
 
         logger.info("Displaying image to Waveshare display.")
         if not image:
-            raise ValueError(f"No image provided.")
+            raise ValueError("No image provided.")
 
         # Assume device was in sleep mode.
         self.epd_display_init()

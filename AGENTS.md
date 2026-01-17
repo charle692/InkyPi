@@ -42,17 +42,21 @@ pytest tests/ --cov=src
 python scripts/test_plugin.py
 ```
 
-### Code Quality
-Note: No formal linting/formatting tools configured. Consider adding:
+### Code Quality Tools
+The project uses EditorConfig for basic formatting consistency, plus Black, isort, and flake8 for Python-specific formatting.
+
 ```bash
-# If adding black for formatting
-black src/ tests/
+# Format code with Black (respects EditorConfig indentation)
+black .
 
-# If adding flake8 for linting
-flake8 src/ tests/
+# Sort imports with isort
+isort .
 
-# If adding mypy for type checking
-mypy src/
+# Lint with flake8 (reads from .flake8 config)
+flake8 .
+
+# Run all formatting tools
+black . && isort . && flake8 .
 ```
 
 ## Code Style Guidelines

@@ -1,15 +1,16 @@
-from plugins.base_plugin.base_plugin import BasePlugin
-from PIL import Image, ImageDraw, ImageFont
-
 import requests
+from PIL import Image, ImageDraw
+
+from plugins.base_plugin.base_plugin import BasePlugin
+from utils.app_utils import get_font
 
 from .comic_parser import COMICS, get_panel
-from utils.app_utils import get_font
+
 
 class Comic(BasePlugin):
     def generate_settings_template(self):
         template_params = super().generate_settings_template()
-        template_params['comics'] = list(COMICS)
+        template_params["comics"] = list(COMICS)
         return template_params
 
     def generate_image(self, settings, device_config):
@@ -42,12 +43,16 @@ class Comic(BasePlugin):
             if is_caption:
                 if comic_panel["title"]:
                     lines, wrapped_text = self._wrap_text(comic_panel["title"], font, width)
-                    draw.multiline_text((width // 2, 0), wrapped_text, font=font, fill="black", anchor="ma")
+                    draw.multiline_text(
+                        (width // 2, 0), wrapped_text, font=font, fill="black", anchor="ma"
+                    )
                     top_padding = font.getbbox(wrapped_text)[3] * lines + 1
 
                 if comic_panel["caption"]:
                     lines, wrapped_text = self._wrap_text(comic_panel["caption"], font, width)
-                    draw.multiline_text((width // 2, height), wrapped_text, font=font, fill="black", anchor="md")
+                    draw.multiline_text(
+                        (width // 2, height), wrapped_text, font=font, fill="black", anchor="md"
+                    )
                     bottom_padding = font.getbbox(wrapped_text)[3] * lines + 1
 
             scale = min(width / img.width, (height - top_padding - bottom_padding) / img.height)
@@ -57,10 +62,10 @@ class Comic(BasePlugin):
             y_middle = (height - img.height) // 2
             y_top_bound = top_padding
             y_bottom_bound = height - img.height - bottom_padding
-            
+
             x = (width - img.width) // 2
             y = y = min(max(y_middle, y_top_bound), y_bottom_bound)
-            
+
             background.paste(img, (x, y))
 
             return background
@@ -71,8 +76,8 @@ class Comic(BasePlugin):
 
         while words:
             line = words.pop()
-            while words and font.getbbox(line + ' ' + words[-1])[2] < width:
-                line += ' ' + words.pop()
+            while words and font.getbbox(line + " " + words[-1])[2] < width:
+                line += " " + words.pop()
             lines.append(line)
 
-        return len(lines), '\n'.join(lines)
+        return len(lines), "\n".join(lines)

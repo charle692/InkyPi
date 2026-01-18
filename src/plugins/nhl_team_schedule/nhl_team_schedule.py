@@ -44,11 +44,19 @@ class NHLTeamSchedule(BasePlugin):
         if device_config.get_config("orientation") == "vertical":
             dimensions = dimensions[::-1]
 
+        # Extract quality enhancement settings (with type conversion from form strings)
+        upscale_factor = int(settings.get("upscaleFactor", 2))  # Convert to int, default 2x
+        sharpen_strength = float(settings.get("sharpenStrength", 1.0))  # Convert to float, default aggressive
+        dither_bw = settings.get("ditherBW", "true").lower() == "true"  # Convert string to bool, default True
+
         image = self.render_image(
             dimensions,
             "nhl_team_schedule.html",
             "nhl_team_schedule.css",
             image_template_params,
+            upscale_factor=upscale_factor,
+            sharpen_strength=sharpen_strength,
+            dither_bw=dither_bw,
         )
 
         return image

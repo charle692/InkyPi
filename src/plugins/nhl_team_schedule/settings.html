@@ -48,6 +48,37 @@
       <option value="UTA">Utah Mammoth</option>
     </select>
   </div>
+
+  <!-- Quality Enhancement Settings -->
+  <div class="form-group nowrap">
+    <label for="upscaleFactor" class="form-label">Rendering Quality (Upscale Factor):</label>
+    <select id="upscaleFactor" name="upscaleFactor" class="form-input">
+      <option value="1">Standard (1x)</option>
+      <option value="2" selected>High Quality (2x)</option>
+      <option value="3">Ultra Quality (3x)</option>
+    </select>
+    <small style="display: block; margin-top: 5px; color: #666;">Higher values render at larger resolution then downscale for crisp text (slightly slower)</small>
+  </div>
+
+  <div class="form-group nowrap">
+    <label for="sharpenStrength" class="form-label">Text Sharpness:</label>
+    <select id="sharpenStrength" name="sharpenStrength" class="form-input">
+      <option value="0">Disabled</option>
+      <option value="0.5">Conservative</option>
+      <option value="1.0" selected>Aggressive</option>
+      <option value="1.5">Very Aggressive</option>
+    </select>
+    <small style="display: block; margin-top: 5px; color: #666;">Controls edge enhancement to reduce blurriness</small>
+  </div>
+
+  <div class="form-group nowrap">
+    <label for="ditherBW" class="form-label">Black & White Dithering:</label>
+    <select id="ditherBW" name="ditherBW" class="form-input">
+      <option value="false">Disabled</option>
+      <option value="true" selected>Enabled</option>
+    </select>
+    <small style="display: block; margin-top: 5px; color: #666;">Converts to pure black/white for e-ink displays (recommended for better contrast)</small>
+  </div>
 </div>
 
 <script>
@@ -55,6 +86,9 @@
     if (loadPluginSettings) {
       document.getElementById("title").value = pluginSettings.title || "";
       document.getElementById("nhlTeam").value = pluginSettings.nhlTeam;
+      document.getElementById("upscaleFactor").value = pluginSettings.upscaleFactor || "2";
+      document.getElementById("sharpenStrength").value = pluginSettings.sharpenStrength || "1.0";
+      document.getElementById("ditherBW").value = (pluginSettings.ditherBW !== false ? "true" : "false");
     }
   });
 </script>

@@ -24,14 +24,17 @@
                         "refresh": {
                             "interval": 60
                         },
-                        "latest_refresh_time": "2026-01-18T05:24:28.477352+00:00"
+                        "latest_refresh_time": "2026-01-18T23:09:29.413070+00:00"
                     },
                     {
                         "plugin_id": "nhl_team_schedule",
-                        "name": "Ottawa schedule",
+                        "name": "Ottawa Sens Schedule",
                         "plugin_settings": {
-                            "title": "Ottawa Schedule",
+                            "title": "Ottawa Sens Schedule",
                             "nhlTeam": "OTT",
+                            "upscaleFactor": "1",
+                            "sharpenStrength": "1.5",
+                            "ditherBW": "false",
                             "selectedFrame": "None",
                             "topMargin": "",
                             "bottomMargin": "",
@@ -44,20 +47,20 @@
                         "refresh": {
                             "interval": 900
                         },
-                        "latest_refresh_time": "2026-01-18T19:37:00.746128+00:00"
+                        "latest_refresh_time": "2026-01-18T22:09:28.446466+00:00"
                     }
                 ],
-                "current_plugin_index": 3
+                "current_plugin_index": 0
             }
         ],
         "active_playlist": "Default"
     },
     "refresh_info": {
-        "refresh_time": "2026-01-18T19:37:00.746128+00:00",
-        "image_hash": "fbd0ab8f300b8942a76620a4acc459a4e3eb89113ed44a8320166497b0875842",
+        "refresh_time": "2026-01-18T23:09:29.413070+00:00",
+        "image_hash": "1b3d8cc602fc8f4e398f70a1bad306637a39d4832ec179087a5ba9913660301e",
         "refresh_type": "Playlist",
-        "plugin_id": "nhl_team_schedule",
+        "plugin_id": "clock",
         "playlist": "Default",
-        "plugin_instance": "Ottawa schedule"
+        "plugin_instance": "clock"
     }
 }

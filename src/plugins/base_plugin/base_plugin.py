@@ -80,7 +80,7 @@ class BasePlugin:
         template_params['frame_styles'] = FRAME_STYLES
         return template_params
 
-    def render_image(self, dimensions, html_file, css_file=None, template_params={}):
+    def render_image(self, dimensions, html_file, css_file=None, template_params={}, upscale_factor=1, sharpen_strength=0, dither_bw=False):
         # load the base plugin and current plugin css files
         css_files = [os.path.join(BASE_PLUGIN_RENDER_DIR, "plugin.css")]
         if css_file:
@@ -130,4 +130,4 @@ class BasePlugin:
             # Not in Flask context or Flask not available
             pass
 
-        return take_screenshot_html(rendered_html, dimensions)
+        return take_screenshot_html(rendered_html, dimensions, upscale_factor=upscale_factor, sharpen_strength=sharpen_strength, dither_bw=dither_bw)

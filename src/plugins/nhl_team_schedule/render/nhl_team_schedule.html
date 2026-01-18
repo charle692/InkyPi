@@ -1,18 +1,137 @@
 {% extends "plugin.html" %} {% block content %}
-<div>
-  <h1 class="title">{{ title }}</h1>
-  <div class="content">
-    <div class="awayTeam">
-      <img class="teamLogo" src="{{ away_team.logo | safe }}" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+  rel="stylesheet"
+/>
+<div class="bw-container">
+  <!-- Header with date/day -->
+  <h1 class="bw-header">
+    NHL MATCHUP: {% if day == "Today" %}TODAY{% else %}{{ day | upper }}{% endif
+    %}
+  </h1>
+
+  <!-- Matchup section with logos, time, venue -->
+  <div class="bw-matchup">
+    <div class="logo-container">
+      <img
+        class="logo"
+        src="{{ static_dir }}/images/nhl_team_pxl_logos/{{ home_team_logo }}"
+        alt="{{ home_team.abbrev }}"
+      />
     </div>
-    <div class="dayTime">
-      <span>{{ day }}</span>
-      <span class="at">@</span>
-      <span class="time">{{ time }}</span>
-      <span>{{ " / ".join(networks) }}</span>
+
+    <div class="center-info">
+      <div class="time">{{ time }}</div>
+      <div class="venue">{{ home_team.placeName.default }}</div>
     </div>
-    <div class="homeTeam">
-      <img class="teamLogo" src="{{ home_team.logo | safe }}" />
+
+    <div class="logo-container">
+      <img
+        class="logo"
+        src="{{ static_dir }}/images/nhl_team_pxl_logos/{{ away_team_logo }}"
+        alt="{{ away_team.abbrev }}"
+      />
+    </div>
+  </div>
+
+  <!-- Stats section header -->
+  <div class="stats-header">STATS</div>
+
+  <!-- Stats grid (2 columns) -->
+  <div class="stats-grid">
+    <!-- Away team stats -->
+    <div class="team-stats">
+      <div class="team-record">
+        <div class="stat-row">
+          <span class="stat-label">{{ away_team.abbrev }}</span>
+          <span class="stat-value"
+            >({{ away_team_stats.get('wins', '0') }}-{{
+            away_team_stats.get('losses', '0') }}-{{
+            away_team_stats.get('otLosses', '0') }})</span
+          >
+        </div>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">SOG/GAME:</span>
+        <span class="stat-value"
+          >{{ "%.1f"|format(away_team_stats.get('goalFor', 0) / 82) if
+          away_team_stats.get('goalFor', 0) else 'N/A' }}</span
+        >
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">TOP SCORER:</span>
+        <!-- TODO: Add top scorer data when available from stats -->
+        <span class="stat-value">N/A</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">LAST 10:</span>
+        <!-- TODO: Last 10 record not available in current stats data structure -->
+        <span class="stat-value">N/A</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">PP%:</span>
+        <span class="stat-value"
+          >{{ "%.1f"|format(away_team_stats.get('powerPlayPercentage', 0))
+          }}%</span
+        >
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">PK%:</span>
+        <span class="stat-value"
+          >{{ "%.1f"|format(away_team_stats.get('penaltyKillPercentage', 0))
+          }}%</span
+        >
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="stats-divider"></div>
+
+    <!-- Home team stats -->
+    <div class="team-stats">
+      <div class="team-record">
+        <div class="stat-row">
+          <span class="stat-label">{{ home_team.abbrev }}</span>
+          <span class="stat-value"
+            >({{ home_team_stats.get('wins', '0') }}-{{
+            home_team_stats.get('losses', '0') }}-{{
+            home_team_stats.get('otLosses', '0') }})</span
+          >
+        </div>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">SOG/GAME:</span>
+        <span class="stat-value"
+          >{{ "%.1f"|format(home_team_stats.get('goalFor', 0) / 82) if
+          home_team_stats.get('goalFor', 0) else 'N/A' }}</span
+        >
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">TOP SCORER:</span>
+        <!-- TODO: Add top scorer data when available from stats -->
+        <span class="stat-value">N/A</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">LAST 10:</span>
+        <!-- TODO: Last 10 record not available in current stats data structure -->
+        <span class="stat-value">N/A</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">PP%:</span>
+        <span class="stat-value"
+          >{{ "%.1f"|format(home_team_stats.get('powerPlayPercentage', 0))
+          }}%</span
+        >
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">PK%:</span>
+        <span class="stat-value"
+          >{{ "%.1f"|format(home_team_stats.get('penaltyKillPercentage', 0))
+          }}%</span
+        >
+      </div>
     </div>
   </div>
 </div>

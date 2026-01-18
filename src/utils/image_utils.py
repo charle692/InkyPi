@@ -129,7 +129,20 @@ def take_screenshot(target, dimensions, timeout_ms=None):
             "--disable-extensions",
             "--disable-plugins",
             "--mute-audio",
-            "--no-sandbox"
+            "--no-sandbox",
+            # Enhanced flags for better image quality and reduced compression
+            "--force-color-profile=srgb",                    # Force consistent color profile
+            "--disable-font-subpixel-positioning",          # Eliminate subpixel font artifacts
+            "--disable-lcd-text",                           # Disable LCD text optimizations
+            "--font-render-hinting=none",                   # Disable font hinting compression
+            "--disable-subpixel-font-rendering",             # Prevent subpixel font compression
+            "--force-device-scale-factor=1",                 # Ensure 1:1 pixel mapping
+            "--disable-features=VizDisplayCompositor",       # Disable compositor compression
+            "--disable-accelerated-2d-canvas",              # Use software 2D rendering
+            "--disable-threaded-animation",                  # Prevent animation compression artifacts
+            "--disable-checker-imaging",                     # Disable image tiling/compression
+            "--run-all-compositor-stages-before-draw",       # Complete rendering before capture
+            "--disable-new-content-rendering-timeout"        # Ensure full quality rendering
         ]
         if timeout_ms:
             command.append(f"--timeout={timeout_ms}")

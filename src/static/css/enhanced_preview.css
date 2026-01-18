@@ -74,7 +74,8 @@ body {
   border-radius: 16px;
   padding: 20px;
   backdrop-filter: blur(10px);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
     0 10px 10px -5px rgba(0, 0, 0, 0.04);
   height: fit-content;
   position: sticky;
@@ -93,7 +94,8 @@ body {
   border-radius: 12px;
   padding: 15px 20px;
   backdrop-filter: blur(10px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
     0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
@@ -131,7 +133,8 @@ body {
   border-radius: 16px;
   padding: 30px;
   backdrop-filter: blur(10px);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
     0 10px 10px -5px rgba(0, 0, 0, 0.04);
   min-height: 600px;
   display: flex;
@@ -144,15 +147,14 @@ body {
 .preview-device {
   background: white;
   border-radius: 12px;
-  box-shadow: 0 0 0 2px #e2e8f0, 0 10px 25px -5px rgba(0, 0, 0, 0.15),
+  box-shadow:
+    0 0 0 2px #e2e8f0,
+    0 10px 25px -5px rgba(0, 0, 0, 0.15),
     0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  padding: 20px;
   transition: transform 0.3s ease;
 }
 
 .device-frame {
-  border: 3px solid #2d3748;
-  border-radius: 8px;
   overflow: hidden;
   background: white;
   position: relative;
@@ -175,7 +177,8 @@ body {
   background: rgba(255, 255, 255, 0.98);
   border-radius: 12px;
   padding: 20px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
     0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 

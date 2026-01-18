@@ -17,7 +17,7 @@ class NHLTeamSchedule(BasePlugin):
         nhl_team = settings.get("nhlTeam")
         if not nhl_team:
             raise RuntimeError("NHL Team is required.")
-        
+
         todays_game, next_game = self.get_game_schedule(nhl_team)
         day, time, selected_game = self.get_day_and_time(todays_game, next_game)
         networks = self.get_game_story(selected_game["id"])
@@ -25,24 +25,6 @@ class NHLTeamSchedule(BasePlugin):
         away_team = selected_game["awayTeam"]
 
         home_team_stats, away_team_stats = self.get_team_stats(home_team, away_team)
-
-        # Get design choice from settings, default to original
-        design_choice = settings.get("design", "original")
-        
-        # Map design choices to template files
-        design_templates = {
-            "original": ("nhl_team_schedule.html", "nhl_team_schedule.css"),
-            "enhanced": ("designs/enhanced_layout.html", "designs/enhanced_layout.css"),
-            "stats_focused": ("designs/stats_focused.html", "designs/stats_focused.css"),
-            "card_style": ("designs/card_style.html", "designs/card_style.css"),
-            "minimalist": ("designs/minimalist.html", "designs/minimalist.css"),
-            "dashboard": ("designs/dashboard.html", "designs/dashboard.css"),
-            "timeline": ("designs/timeline.html", "designs/timeline.css"),
-            "bracket": ("designs/bracket.html", "designs/bracket.css")
-        }
-        
-        # Use original if invalid design choice
-        html_template, css_template = design_templates.get(design_choice, design_templates["original"])
 
         image_template_params = {
             "day": day,
@@ -52,6 +34,8 @@ class NHLTeamSchedule(BasePlugin):
             "networks": networks,
             "plugin_settings": settings,
             "title": f"{home_team.get('commonName', {}).get('default', '')} vs {away_team.get('commonName', {}).get('default', '')}",
+            "home_team_logo": f"{away_team.get('abbrev', '').lower()}.png",
+            "away_team_logo": f"{home_team.get('abbrev', '').lower()}.png",
             "home_team_stats": home_team_stats,
             "away_team_stats": away_team_stats,
         }
@@ -62,13 +46,13 @@ class NHLTeamSchedule(BasePlugin):
 
         image = self.render_image(
             dimensions,
-            html_template,
-            css_template,
+            "nhl_team_schedule.html",
+            "nhl_team_schedule.css",
             image_template_params,
         )
 
         return image
-    
+
     def get_game_schedule(self, nhl_team):
         response = requests.get(
             f"https://api-web.nhle.com/v1/club-schedule-season/{nhl_team}/now",
@@ -95,9 +79,9 @@ class NHLTeamSchedule(BasePlugin):
                 break
             elif not next_game and game_date > todays_date:
                 next_game = game
-        
+
         return todays_game, next_game
-    
+
     def get_game_story(self, game_id):
         # contains some pre-game statistics like PK percentage etc
         response = requests.get(
@@ -113,14 +97,14 @@ class NHLTeamSchedule(BasePlugin):
                 f"NHL Team Schedule Plugin: Error: {response.status_code} - {response.text}"
             )
             raise RuntimeError("Failed to fetch game story data.")
-        
+
         networks = []
 
         for tv_broadcast in data.get("tvBroadcasts", []):
             networks.append(tv_broadcast["network"])
 
         return networks
-    
+
     def get_team_stats(self, home_team, away_team):
         response = requests.get(
             "https://api-web.nhle.com/v1/standings/now",
@@ -135,7 +119,7 @@ class NHLTeamSchedule(BasePlugin):
                 f"NHL Team Schedule Plugin: Error: {response.status_code} - {response.text}"
             )
             raise RuntimeError("Failed to fetch team stats data.")
-        
+
         home_team_stats = {}
         away_team_stats = {}
         for team in data.get("standings", []):
@@ -147,7 +131,7 @@ class NHLTeamSchedule(BasePlugin):
                 break
 
         return home_team_stats, away_team_stats
-    
+
     def get_day_and_time(self, todays_game, next_game):
         eastern = timezone('US/Eastern')
         utc_dt = datetime.strptime(todays_game['startTimeUTC'] if todays_game else next_game['startTimeUTC'], "%Y-%m-%dT%H:%M:%SZ")

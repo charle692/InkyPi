@@ -108,7 +108,7 @@ def dither_to_bw(image):
             old_value = img_array[y, x]
             
             # Quantize to black (0) or white (255)
-            new_value = 255 if old_value >= 1 else 0
+            new_value = 255 if old_value > 1 else 0
             img_array[y, x] = new_value
             
             # Calculate error
@@ -126,37 +126,6 @@ def dither_to_bw(image):
     
     # Convert back to PIL Image
     result = Image.fromarray(np.uint8(np.clip(img_array, 0, 255)))
-    return result
-
-def sharpen_image(image, strength=1.0):
-    """
-    Sharpen image using unsharp masking.
-    
-    Args:
-        image: PIL Image
-        strength: Sharpening strength (1.0 = aggressive, 0.5 = conservative)
-    
-    Returns:
-        Sharpened PIL Image
-    """
-    if strength <= 0:
-        return image
-    
-    # Apply unsharp mask: (original - blurred) * strength + original
-    # This enhances edges without creating too many artifacts
-    radius = 2
-    percent = 150 * strength  # Aggressiveness controlled by strength parameter
-    
-    blurred = image.filter(ImageFilter.GaussianBlur(radius))
-    
-    # Manual unsharp masking for better control
-    img_array = np.array(image, dtype=np.float32)
-    blur_array = np.array(blurred, dtype=np.float32)
-    
-    sharpened = img_array + (img_array - blur_array) * (percent / 100)
-    sharpened = np.clip(sharpened, 0, 255)
-    
-    result = Image.fromarray(np.uint8(sharpened))
     return result
 
 def take_screenshot_html(html_str, dimensions, timeout_ms=None, sharpen_strength=0, dither_bw=False):
@@ -182,13 +151,9 @@ def take_screenshot_html(html_str, dimensions, timeout_ms=None, sharpen_strength
 
         image = take_screenshot(html_file_path, dimensions, timeout_ms)
 
-        # Apply post-processing enhancements
-        if image:
-            if sharpen_strength > 0:
-                image = sharpen_image(image, strength=sharpen_strength)
-            
-            if dither_bw:
-                image = dither_to_bw(image)
+        # Apply this conditionally based on settings to be passed
+        image = apply_image_enhancement(image, { "contrast": 2.0, "sharpness": 2.0, "brightness": 2.0 })
+        image = dither_to_bw(image)
 
         # Remove html file
         os.remove(html_file_path)

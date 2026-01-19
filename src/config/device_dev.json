@@ -33,7 +33,7 @@
                             "title": "Ottawa Sens Schedule",
                             "nhlTeam": "OTT",
                             "sharpenStrength": "1.0",
-                            "ditherBW": "true",
+                            "ditherBW": "false",
                             "selectedFrame": "None",
                             "topMargin": "",
                             "bottomMargin": "",
@@ -46,7 +46,7 @@
                         "refresh": {
                             "interval": 900
                         },
-                        "latest_refresh_time": "2026-01-19T02:26:22.974468+00:00"
+                        "latest_refresh_time": "2026-01-19T02:42:09.581898+00:00"
                     }
                 ],
                 "current_plugin_index": 0
@@ -55,8 +55,8 @@
         "active_playlist": "Default"
     },
     "refresh_info": {
-        "refresh_time": "2026-01-19T02:26:22.974468+00:00",
-        "image_hash": "cd6ed473a02486f673fa3bac590f83c20d3c4671a0d62c13628f78216705843b",
+        "refresh_time": "2026-01-19T02:42:09.581898+00:00",
+        "image_hash": "a7759697a965821711c2f6bdc8a6ed2c270abf44ecb5ed2ba98f18a554e14683",
         "refresh_type": "Playlist",
         "plugin_id": "nhl_team_schedule",
         "playlist": "Default",

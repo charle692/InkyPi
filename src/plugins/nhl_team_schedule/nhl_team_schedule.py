@@ -20,7 +20,6 @@ class NHLTeamSchedule(BasePlugin):
 
         todays_game, next_game = self.get_game_schedule(nhl_team)
         day, time, selected_game = self.get_day_and_time(todays_game, next_game)
-        networks = self.get_game_story(selected_game["id"])
         home_team = selected_game["homeTeam"]
         away_team = selected_game["awayTeam"]
 
@@ -31,7 +30,6 @@ class NHLTeamSchedule(BasePlugin):
             "time": time,
             "home_team": home_team,
             "away_team": away_team,
-            "networks": networks,
             "plugin_settings": settings,
             "title": f"{home_team.get('commonName', {}).get('default', '')} vs {away_team.get('commonName', {}).get('default', '')}",
             "home_team_logo": f"{away_team.get('abbrev', '').lower()}.png",
@@ -87,29 +85,6 @@ class NHLTeamSchedule(BasePlugin):
                 next_game = game
 
         return todays_game, next_game
-
-    def get_game_story(self, game_id):
-        # contains some pre-game statistics like PK percentage etc
-        response = requests.get(
-            f"https://api-web.nhle.com/v1/wsc/game-story/{game_id}",
-            timeout=10,
-            headers={"Content-Type": "application/json"},
-        )
-
-        if response.status_code == 200:
-            data = response.json()
-        else:
-            logger.error(
-                f"NHL Team Schedule Plugin: Error: {response.status_code} - {response.text}"
-            )
-            raise RuntimeError("Failed to fetch game story data.")
-
-        networks = []
-
-        for tv_broadcast in data.get("tvBroadcasts", []):
-            networks.append(tv_broadcast["network"])
-
-        return networks
 
     def get_team_stats(self, home_team, away_team):
         response = requests.get(

@@ -4,8 +4,6 @@ from utils.app_utils import resolve_path, get_fonts
 from utils.image_utils import take_screenshot_html
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from pathlib import Path
-import asyncio
-import base64
 
 logger = logging.getLogger(__name__)
 
@@ -80,7 +78,7 @@ class BasePlugin:
         template_params['frame_styles'] = FRAME_STYLES
         return template_params
 
-    def render_image(self, dimensions, html_file, css_file=None, template_params={}, upscale_factor=1, sharpen_strength=0, dither_bw=False):
+    def render_image(self, dimensions, html_file, css_file=None, template_params={}, sharpen_strength=0, dither_bw=False):
         # load the base plugin and current plugin css files
         css_files = [os.path.join(BASE_PLUGIN_RENDER_DIR, "plugin.css")]
         if css_file:
@@ -130,4 +128,4 @@ class BasePlugin:
             # Not in Flask context or Flask not available
             pass
 
-        return take_screenshot_html(rendered_html, dimensions, upscale_factor=upscale_factor, sharpen_strength=sharpen_strength, dither_bw=dither_bw)
+        return take_screenshot_html(rendered_html, dimensions, sharpen_strength=sharpen_strength, dither_bw=dither_bw)

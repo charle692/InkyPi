@@ -159,7 +159,7 @@ def sharpen_image(image, strength=1.0):
     result = Image.fromarray(np.uint8(sharpened))
     return result
 
-def take_screenshot_html(html_str, dimensions, timeout_ms=None, upscale_factor=1, sharpen_strength=0, dither_bw=False):
+def take_screenshot_html(html_str, dimensions, timeout_ms=None, sharpen_strength=0, dither_bw=False):
     """
     Take a screenshot of HTML content with optional quality enhancements.
     
@@ -167,8 +167,6 @@ def take_screenshot_html(html_str, dimensions, timeout_ms=None, upscale_factor=1
         html_str: HTML content to render
         dimensions: Target dimensions (width, height)
         timeout_ms: Optional timeout in milliseconds
-        upscale_factor: Device scale factor for crisp rendering (default 1, use 2-3 for high quality)
-                       Higher values render at higher internal DPI while preserving layout
         sharpen_strength: Sharpening strength 0-1+ (default 0 = disabled, 1.0 = aggressive)
         dither_bw: Apply Floyd-Steinberg dithering for black/white e-ink displays (default False)
     
@@ -182,7 +180,7 @@ def take_screenshot_html(html_str, dimensions, timeout_ms=None, upscale_factor=1
             html_file.write(html_str.encode("utf-8"))
             html_file_path = html_file.name
 
-        image = take_screenshot(html_file_path, dimensions, timeout_ms, upscale_factor=upscale_factor)
+        image = take_screenshot(html_file_path, dimensions, timeout_ms)
 
         # Apply post-processing enhancements
         if image:
@@ -200,7 +198,7 @@ def take_screenshot_html(html_str, dimensions, timeout_ms=None, upscale_factor=1
 
     return image
 
-def take_screenshot(target, dimensions, timeout_ms=None, upscale_factor=1):
+def take_screenshot(target, dimensions, timeout_ms=None):
     """
     Take a screenshot of HTML content using Chromium headless.
     
@@ -208,8 +206,6 @@ def take_screenshot(target, dimensions, timeout_ms=None, upscale_factor=1):
         target: Path to HTML file or URL to render
         dimensions: Target dimensions (width, height) as tuple
         timeout_ms: Optional timeout in milliseconds
-        upscale_factor: Device scale factor for crisp rendering (default 1, use 2-3 for high quality)
-                       Controls internal DPI rendering while maintaining layout at target dimensions
     
     Returns:
         PIL Image or None
@@ -244,7 +240,6 @@ def take_screenshot(target, dimensions, timeout_ms=None, upscale_factor=1):
             "--disable-lcd-text",                           # Disable LCD text optimizations
             "--font-render-hinting=none",                   # Disable font hinting compression
             "--disable-subpixel-font-rendering",             # Prevent subpixel font compression
-            f"--force-device-scale-factor={upscale_factor}", # DPI scale for crisp rendering
             "--disable-features=VizDisplayCompositor",       # Disable compositor compression
             "--disable-accelerated-2d-canvas",              # Use software 2D rendering
             "--disable-threaded-animation",                  # Prevent animation compression artifacts

@@ -12,7 +12,6 @@
 
 .bw-header {
   color: #000000;
-  /* font-size: 48px; */
   font-size: 32px;
   font-weight: bold;
   text-align: center;
@@ -83,6 +82,7 @@
   letter-spacing: 1px;
   text-transform: uppercase;
   border-top: 3px solid #000000;
+  border-bottom: 3px solid #000000;
   padding-top: 8px;
   padding-bottom: 4px;
 }
@@ -105,7 +105,7 @@
 }
 
 .stats-divider {
-  width: 2px;
+  width: 3px;
   background: #000000;
   flex: 0 0 auto;
 }

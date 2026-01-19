@@ -24,6 +24,7 @@ class NHLTeamSchedule(BasePlugin):
         away_team = selected_game["awayTeam"]
 
         home_team_stats, away_team_stats = self.get_team_stats(home_team, away_team)
+        gamecenter_stats = self.get_gamecenter_stats(selected_game["id"])
 
         image_template_params = {
             "day": day,
@@ -36,6 +37,7 @@ class NHLTeamSchedule(BasePlugin):
             "away_team_logo": f"{home_team.get('abbrev', '').lower()}.png",
             "home_team_stats": home_team_stats,
             "away_team_stats": away_team_stats,
+            "gamecenter_stats": gamecenter_stats,
         }
 
         dimensions = device_config.get_resolution()
@@ -112,6 +114,23 @@ class NHLTeamSchedule(BasePlugin):
                 break
 
         return home_team_stats, away_team_stats
+
+    def get_gamecenter_stats(self, game_id):
+        response = requests.get(
+            f"https://api-web.nhle.com/v1/gamecenter/{game_id}/right-rail",
+            timeout=10,
+            headers={"Content-Type": "application/json"},
+        )
+
+        if response.status_code == 200:
+            data = response.json()
+        else:
+            logger.error(
+                f"NHL Team Schedule Plugin: Error: {response.status_code} - {response.text}"
+            )
+            raise RuntimeError("Failed to fetch gamecenter stats data.")
+
+        return data
 
     def get_day_and_time(self, todays_game, next_game):
         eastern = timezone('US/Eastern')

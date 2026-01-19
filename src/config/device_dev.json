@@ -24,16 +24,16 @@
                         "refresh": {
                             "interval": 60
                         },
-                        "latest_refresh_time": "2026-01-18T23:09:29.413070+00:00"
+                        "latest_refresh_time": "2026-01-19T02:59:37.328215+00:00"
                     },
                     {
                         "plugin_id": "nhl_team_schedule",
                         "name": "Ottawa Sens Schedule",
                         "plugin_settings": {
-                            "title": "Ottawa Sens Schedule",
+                            "title": "Ottawa Schedule",
                             "nhlTeam": "OTT",
                             "sharpenStrength": "1.0",
-                            "ditherBW": "false",
+                            "ditherBW": "true",
                             "selectedFrame": "None",
                             "topMargin": "",
                             "bottomMargin": "",
@@ -46,7 +46,7 @@
                         "refresh": {
                             "interval": 900
                         },
-                        "latest_refresh_time": "2026-01-19T02:42:09.581898+00:00"
+                        "latest_refresh_time": "2026-01-19T03:43:18.922164+00:00"
                     }
                 ],
                 "current_plugin_index": 0
@@ -55,8 +55,8 @@
         "active_playlist": "Default"
     },
     "refresh_info": {
-        "refresh_time": "2026-01-19T02:42:09.581898+00:00",
-        "image_hash": "a7759697a965821711c2f6bdc8a6ed2c270abf44ecb5ed2ba98f18a554e14683",
+        "refresh_time": "2026-01-19T03:43:18.922164+00:00",
+        "image_hash": "d47e67d1ddd5452f0e283e66f3707ce5557ea3ab1970fd5df8602934f906087c",
         "refresh_type": "Playlist",
         "plugin_id": "nhl_team_schedule",
         "playlist": "Default",

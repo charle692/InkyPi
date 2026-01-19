@@ -43,47 +43,65 @@
   <div class="stats-grid">
     <!-- Away team stats -->
     <div class="team-stats">
-      <div class="team-record">
-        <div class="stat-row">
-          <span class="stat-label">{{ away_team.abbrev }}</span>
-          <span class="stat-value"
-            >({{ away_team_stats.get('wins', '0') }}-{{
-            away_team_stats.get('losses', '0') }}-{{
-            away_team_stats.get('otLosses', '0') }})</span
-          >
-        </div>
-      </div>
       <div class="stat-row">
-        <span class="stat-label">SOG/GAME:</span>
+        <span class="stat-label">{{ away_team.abbrev }}:</span>
         <span class="stat-value"
-          >{{ "%.1f"|format(away_team_stats.get('goalFor', 0) / 82) if
-          away_team_stats.get('goalFor', 0) else 'N/A' }}</span
+          >({{ away_team_stats.get('wins', '0') }}-{{
+          away_team_stats.get('losses', '0') }}-{{
+          away_team_stats.get('otLosses', '0') }})</span
         >
-      </div>
-      <div class="stat-row">
-        <span class="stat-label">TOP SCORER:</span>
-        <!-- TODO: Add top scorer data when available from stats -->
-        <span class="stat-value">N/A</span>
       </div>
       <div class="stat-row">
         <span class="stat-label">LAST 10:</span>
-        <!-- TODO: Last 10 record not available in current stats data structure -->
-        <span class="stat-value">N/A</span>
-      </div>
-      <div class="stat-row">
-        <span class="stat-label">PP%:</span>
         <span class="stat-value"
-          >{{ "%.1f"|format(away_team_stats.get('powerPlayPercentage', 0))
-          }}%</span
+          >({{ away_team_stats.get('l10Wins', '0') }}-{{
+          away_team_stats.get('l10Losses', '0') }}-{{
+          away_team_stats.get('l10OTLosses', '0') }})</span
         >
       </div>
       <div class="stat-row">
-        <span class="stat-label">PK%:</span>
-        <span class="stat-value"
-          >{{ "%.1f"|format(away_team_stats.get('penaltyKillPercentage', 0))
-          }}%</span
-        >
+        <span class="stat-label">Win %:</span>
+        <span class="stat-value">{{ "%.1f"|format(away_team_stats.get('winPctg', 0) * 100) }}%</span>
       </div>
+      {% if gamecenter_stats.teamSeasonStats %}
+        <div class="stat-row">
+          <span class="stat-label">GF/GA:</span>
+          <span class="stat-value">
+            {{ gamecenter_stats.teamSeasonStats.awayTeam.goalsForPerGamePlayed }}/{{ gamecenter_stats.teamSeasonStats.awayTeam.goalsAgainstPerGamePlayed}}
+          </span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">PP%:</span>
+          <span class="stat-value">
+            {{ "%.1f"|format(gamecenter_stats.teamSeasonStats.awayTeam.ppPctg * 100) }}%
+          </span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">PK%:</span>
+          <span class="stat-value">
+            {{ "%.1f"|format(gamecenter_stats.teamSeasonStats.awayTeam.pkPctg * 100) }}%
+          </span>
+        </div>
+      {% else %}
+        <div class="stat-row">
+          <span class="stat-label">SOG:</span>
+          <span class="stat-value">
+            {{ gamecenter_stats.teamGameStats | selectattr('category', 'equalto', 'sog') | map(attribute='awayValue') | list | first }}
+          </span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">PP:</span>
+          <span class="stat-value">
+            {{ gamecenter_stats.teamGameStats | selectattr('category', 'equalto', 'powerPlay') | map(attribute='awayValue') | list | first }}
+          </span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">PIM:</span>
+          <span class="stat-value">
+            {{ gamecenter_stats.teamGameStats | selectattr('category', 'equalto', 'pim') | map(attribute='awayValue') | list | first }}
+          </span>
+        </div>
+      {% endif %}
     </div>
 
     <!-- Divider -->
@@ -91,47 +109,65 @@
 
     <!-- Home team stats -->
     <div class="team-stats">
-      <div class="team-record">
-        <div class="stat-row">
-          <span class="stat-label">{{ home_team.abbrev }}</span>
-          <span class="stat-value"
-            >({{ home_team_stats.get('wins', '0') }}-{{
-            home_team_stats.get('losses', '0') }}-{{
-            home_team_stats.get('otLosses', '0') }})</span
-          >
-        </div>
-      </div>
       <div class="stat-row">
-        <span class="stat-label">SOG/GAME:</span>
+        <span class="stat-label">{{ home_team.abbrev }}:</span>
         <span class="stat-value"
-          >{{ "%.1f"|format(home_team_stats.get('goalFor', 0) / 82) if
-          home_team_stats.get('goalFor', 0) else 'N/A' }}</span
+          >({{ home_team_stats.get('wins', '0') }}-{{
+          home_team_stats.get('losses', '0') }}-{{
+          home_team_stats.get('otLosses', '0') }})</span
         >
-      </div>
-      <div class="stat-row">
-        <span class="stat-label">TOP SCORER:</span>
-        <!-- TODO: Add top scorer data when available from stats -->
-        <span class="stat-value">N/A</span>
       </div>
       <div class="stat-row">
         <span class="stat-label">LAST 10:</span>
-        <!-- TODO: Last 10 record not available in current stats data structure -->
-        <span class="stat-value">N/A</span>
-      </div>
-      <div class="stat-row">
-        <span class="stat-label">PP%:</span>
         <span class="stat-value"
-          >{{ "%.1f"|format(home_team_stats.get('powerPlayPercentage', 0))
-          }}%</span
+          >({{ home_team_stats.get('l10Wins', '0') }}-{{
+          home_team_stats.get('l10Losses', '0') }}-{{
+          home_team_stats.get('l10OTLosses', '0') }})</span
         >
       </div>
       <div class="stat-row">
-        <span class="stat-label">PK%:</span>
-        <span class="stat-value"
-          >{{ "%.1f"|format(home_team_stats.get('penaltyKillPercentage', 0))
-          }}%</span
-        >
+        <span class="stat-label">Win %:</span>
+        <span class="stat-value">{{ "%.1f"|format(home_team_stats.get('winPctg', 0) * 100) }}%</span>
       </div>
+      {% if gamecenter_stats.teamSeasonStats %}
+        <div class="stat-row">
+          <span class="stat-label">GF/GA:</span>
+          <span class="stat-value">
+            {{ gamecenter_stats.teamSeasonStats.homeTeam.goalsForPerGamePlayed }}/{{ gamecenter_stats.teamSeasonStats.homeTeam.goalsAgainstPerGamePlayed}}
+          </span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">PP%:</span>
+          <span class="stat-value">
+            {{ "%.1f"|format(gamecenter_stats.teamSeasonStats.homeTeam.ppPctg * 100) }}%
+          </span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">PK%:</span>
+          <span class="stat-value">
+            {{ "%.1f"|format(gamecenter_stats.teamSeasonStats.homeTeam.pkPctg * 100) }}%
+          </span>
+        </div>
+      {% else %}
+        <div class="stat-row">
+          <span class="stat-label">SOG:</span>
+          <span class="stat-value">
+            {{ gamecenter_stats.teamGameStats | selectattr('category', 'equalto', 'sog') | map(attribute='homeValue') | list | first }}
+          </span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">PP:</span>
+          <span class="stat-value">
+            {{ gamecenter_stats.teamGameStats | selectattr('category', 'equalto', 'powerPlay') | map(attribute='homeValue') | list | first }}
+          </span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">PIM:</span>
+          <span class="stat-value">
+            {{ gamecenter_stats.teamGameStats | selectattr('category', 'equalto', 'pim') | map(attribute='homeValue') | list | first }}
+          </span>
+        </div>
+      {% endif %}
     </div>
   </div>
 </div>

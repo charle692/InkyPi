@@ -32,8 +32,8 @@
                         "plugin_settings": {
                             "title": "Ottawa Sens Schedule",
                             "nhlTeam": "OTT",
-                            "upscaleFactor": "1",
-                            "sharpenStrength": "1.5",
+                            "upscaleFactor": "3",
+                            "sharpenStrength": "1.0",
                             "ditherBW": "false",
                             "selectedFrame": "None",
                             "topMargin": "",
@@ -47,7 +47,7 @@
                         "refresh": {
                             "interval": 900
                         },
-                        "latest_refresh_time": "2026-01-18T22:09:28.446466+00:00"
+                        "latest_refresh_time": "2026-01-19T01:57:52.354727+00:00"
                     }
                 ],
                 "current_plugin_index": 0
@@ -56,11 +56,11 @@
         "active_playlist": "Default"
     },
     "refresh_info": {
-        "refresh_time": "2026-01-18T23:09:29.413070+00:00",
-        "image_hash": "1b3d8cc602fc8f4e398f70a1bad306637a39d4832ec179087a5ba9913660301e",
+        "refresh_time": "2026-01-19T01:57:52.354727+00:00",
+        "image_hash": "07e4fe13218b890bb28420963fa0f0356ac02e908b257d2b9ca961c66c531f33",
         "refresh_type": "Playlist",
-        "plugin_id": "clock",
+        "plugin_id": "nhl_team_schedule",
         "playlist": "Default",
-        "plugin_instance": "clock"
+        "plugin_instance": "Ottawa Sens Schedule"
     }
 }

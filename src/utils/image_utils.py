@@ -108,7 +108,7 @@ def dither_to_bw(image):
             old_value = img_array[y, x]
             
             # Quantize to black (0) or white (255)
-            new_value = 255 if old_value > 127 else 0
+            new_value = 255 if old_value >= 1 else 0
             img_array[y, x] = new_value
             
             # Calculate error
@@ -146,7 +146,6 @@ def sharpen_image(image, strength=1.0):
     # This enhances edges without creating too many artifacts
     radius = 2
     percent = 150 * strength  # Aggressiveness controlled by strength parameter
-    threshold = 3
     
     blurred = image.filter(ImageFilter.GaussianBlur(radius))
     
@@ -168,7 +167,8 @@ def take_screenshot_html(html_str, dimensions, timeout_ms=None, upscale_factor=1
         html_str: HTML content to render
         dimensions: Target dimensions (width, height)
         timeout_ms: Optional timeout in milliseconds
-        upscale_factor: Render at higher resolution then downscale (default 1, recommended 2 for high quality)
+        upscale_factor: Device scale factor for crisp rendering (default 1, use 2-3 for high quality)
+                       Higher values render at higher internal DPI while preserving layout
         sharpen_strength: Sharpening strength 0-1+ (default 0 = disabled, 1.0 = aggressive)
         dither_bw: Apply Floyd-Steinberg dithering for black/white e-ink displays (default False)
     
@@ -201,22 +201,31 @@ def take_screenshot_html(html_str, dimensions, timeout_ms=None, upscale_factor=1
     return image
 
 def take_screenshot(target, dimensions, timeout_ms=None, upscale_factor=1):
+    """
+    Take a screenshot of HTML content using Chromium headless.
+    
+    Args:
+        target: Path to HTML file or URL to render
+        dimensions: Target dimensions (width, height) as tuple
+        timeout_ms: Optional timeout in milliseconds
+        upscale_factor: Device scale factor for crisp rendering (default 1, use 2-3 for high quality)
+                       Controls internal DPI rendering while maintaining layout at target dimensions
+    
+    Returns:
+        PIL Image or None
+    """
     image = None
     try:
         # Create a temporary output file for the screenshot
         with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as img_file:
             img_file_path = img_file.name
 
-        # Calculate render dimensions (upscale before rendering if needed)
-        render_width = int(dimensions[0] * upscale_factor)
-        render_height = int(dimensions[1] * upscale_factor)
-
         command = [
             "chromium-headless-shell",
             target,
             "--headless",
             f"--screenshot={img_file_path}",
-            f"--window-size={render_width},{render_height}",
+            f"--window-size={dimensions[0]},{dimensions[1]}",
             "--disable-dev-shm-usage",
             "--disable-gpu",
             "--use-gl=swiftshader",
@@ -235,7 +244,7 @@ def take_screenshot(target, dimensions, timeout_ms=None, upscale_factor=1):
             "--disable-lcd-text",                           # Disable LCD text optimizations
             "--font-render-hinting=none",                   # Disable font hinting compression
             "--disable-subpixel-font-rendering",             # Prevent subpixel font compression
-            "--force-device-scale-factor=1",                 # Ensure 1:1 pixel mapping
+            f"--force-device-scale-factor={upscale_factor}", # DPI scale for crisp rendering
             "--disable-features=VizDisplayCompositor",       # Disable compositor compression
             "--disable-accelerated-2d-canvas",              # Use software 2D rendering
             "--disable-threaded-animation",                  # Prevent animation compression artifacts
@@ -256,10 +265,6 @@ def take_screenshot(target, dimensions, timeout_ms=None, upscale_factor=1):
         # Load the image using PIL
         with Image.open(img_file_path) as img:
             image = img.copy()
-
-        # Downscale back to target dimensions if upscaled
-        if upscale_factor > 1:
-            image = image.resize(dimensions, Image.LANCZOS)
 
         # Remove image files
         os.remove(img_file_path)
